@@ -25,21 +25,430 @@
 
 		<section>
 			<h1 style="margin:70px 0 24px; font-size:48px;">Courses</h1>
-			<p style="max-width:560px; font-size:18px; line-height:1.4; margin:0 0 50px;">Choose a quest path. Each course groups vocabulary into themed packs with spaced-repetition review.</p>
+			<p style="max-width:700px; font-size:18px; line-height:1.4; margin:0 0 50px;">Choose a quest path. Each course groups vocabulary are packed into themes :)</p>
 			<div class="courses-grid">
-				<article class="course-card"><span class="tag">NEW</span><h3>Everyday Basics</h3><p>Greetings, daily routines, objects at home.</p></article>
-				<article class="course-card"><h3>Food & Flavors</h3><p>Meals, ingredients, cooking verbs.</p></article>
-				<article class="course-card"><h3>Travel Explorer</h3><p>Airports, hotels, directions, transport.</p></article>
-				<article class="course-card"><h3>Work & Office</h3><p>Meetings, roles, productivity vocab.</p></article>
-				<article class="course-card"><h3>Health & Wellness</h3><p>Body, symptoms, healthy habits.</p></article>
-				<article class="course-card"><h3>Story Builder</h3><p>Adjectives, feelings, narrative verbs.</p></article>
+				<article class="course-card" data-course="everyday-basics">
+					<span class="tag">NEW</span>
+					<h3>Everyday Basics</h3>
+					<p>Greetings, daily routines, objects at home.</p>
+				</article>
+				<article class="course-card" data-course="food-flavors">
+					<h3>Food & Flavors</h3>
+					<p>Meals, ingredients, cooking verbs.</p>
+				</article>
+				<article class="course-card" data-course="travel-explorer">
+					<h3>Travel Explorer</h3>
+					<p>Airports, hotels, directions, transport.</p>
+				</article>
+				<article class="course-card" data-course="work-office">
+					<h3>Work & Office</h3>
+					<p>Meetings, roles, productivity vocab.</p>
+				</article>
+				<article class="course-card" data-course="health-wellness">
+					<h3>Health & Wellness</h3>
+					<p>Body, symptoms, healthy habits.</p>
+				</article>
+				<article class="course-card" data-course="story-builder">
+					<h3>Story Builder</h3>
+					<p>Adjectives, feelings, narrative verbs.</p>
+				</article>
 			</div>
 		</section>
+
+		<div id="courseModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 id="modalTitle">Course Vocabulary</h2>
+					<span class="close">&times;</span>
+				</div>
+				<div class="modal-body">
+					<div class="vocab-section">
+						<h3>Advanced Vocabulary</h3>
+						<div id="vocabList" class="vocab-grid"></div>
+					</div>
+					<div class="docs-section">
+						<h3>📖 Language Notes & Usage</h3>
+						<div id="docsList" class="docs-content"></div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn teal" id="closeModalBtn">Close</button>
+				</div>
+			</div>
+		</div>
 
 		<footer>
 			© <span id="y"></span> Voquest • Vocabulary Quest
 		</footer>
 	</main>
-	<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+	<script>
+		document.getElementById('y').textContent = new Date().getFullYear();
+
+		const courseData = {
+			'everyday-basics': {
+				title: 'Everyday Basics',
+				vocabulary: [
+					{ 
+						word: 'Acquaintance', 
+						phonetic: '/əˈkweɪntəns/',
+						meaning: 'A person you know slightly, but not very well', 
+						example: 'She is just an acquaintance, not a close friend.',
+						usage: 'Formal contexts when distinguishing relationship levels'
+					},
+					{ 
+						word: 'Dwelling', 
+						phonetic: '/ˈdwelɪŋ/',
+						meaning: 'A place where someone lives; residence', 
+						example: 'The ancient dwelling was carved into the mountainside.',
+						usage: 'More formal than "house" or "home", often literary'
+					},
+					{ 
+						word: 'Commence', 
+						phonetic: '/kəˈmens/',
+						meaning: 'To begin or start something formally', 
+						example: 'The ceremony will commence at precisely 3 PM.',
+						usage: 'Formal situations, ceremonies, official events'
+					},
+					{ 
+						word: 'Vicinity', 
+						phonetic: '/vɪˈsɪnɪti/',
+						meaning: 'The area near or surrounding a particular place', 
+						example: 'There are several restaurants in the vicinity of the hotel.',
+						usage: 'More precise than "nearby" or "around here"'
+					},
+					{ 
+						word: 'Habitual', 
+						phonetic: '/həˈbɪtʃuəl/',
+						meaning: 'Done regularly as a habit; customary', 
+						example: 'His habitual morning routine includes meditation and exercise.',
+						usage: 'Describing regular patterns of behavior'
+					},
+					{ 
+						word: 'Sustenance', 
+						phonetic: '/ˈsʌstənəns/',
+						meaning: 'Food and drink regarded as a source of strength', 
+						example: 'The hikers packed enough sustenance for a week-long journey.',
+						usage: 'More formal than "food", often implies basic nutrition'
+					}
+				],
+				docs: `<strong>Advanced Everyday Vocabulary Usage:</strong><br><br>
+				These sophisticated terms elevate your daily English beyond basic communication.<br><br>
+				<em>Key tip:</em> These words are particularly effective in academic writing, formal presentations, and professional correspondence where precision and sophistication are valued.`
+			},
+			'food-flavors': {
+				title: 'Food & Flavors',
+				vocabulary: [
+					{ 
+						word: 'Palatable', 
+						phonetic: '/ˈpælətəbəl/',
+						meaning: 'Pleasant to taste; acceptable or agreeable', 
+						example: 'The chef managed to make healthy vegetables quite palatable.',
+						usage: 'Often used when something is made acceptable despite potential issues'
+					},
+					{ 
+						word: 'Umami', 
+						phonetic: '/uˈmɑmi/',
+						meaning: 'A savory taste, one of the five basic tastes', 
+						example: 'The mushrooms add a rich umami flavor to the broth.',
+						usage: 'Culinary contexts, describing savory depth in food'
+					},
+					{ 
+						word: 'Piquant', 
+						phonetic: '/ˈpiːkənt/',
+						meaning: 'Having a pleasantly sharp or spicy flavor', 
+						example: 'The piquant sauce complemented the mild fish perfectly.',
+						usage: 'Sophisticated culinary descriptions, wine tasting'
+					},
+					{ 
+						word: 'Delectable', 
+						phonetic: '/dɪˈlektəbəl/',
+						meaning: 'Extremely delicious and appealing', 
+						example: 'The pastry chef created a delectable chocolate soufflé.',
+						usage: 'High-end restaurant menus, gourmet food writing'
+					},
+					{ 
+						word: 'Aromatic', 
+						phonetic: '/ærəˈmætɪk/',
+						meaning: 'Having a pleasant, distinctive smell', 
+						example: 'The aromatic herbs filled the kitchen with fragrance.',
+						usage: 'Wine descriptions, perfume, culinary arts'
+					},
+					{ 
+						word: 'Succulent', 
+						phonetic: '/ˈsʌkjələnt/',
+						meaning: 'Tender, juicy, and tasty', 
+						example: 'The succulent roast beef melted in their mouths.',
+						usage: 'Fine dining descriptions, food reviews'
+					}
+				],
+				docs: `<strong>Culinary Vocabulary:</strong><br><br>
+				Master these sophisticated food terms to describe culinary experiences with precision.<br><br>
+				<em>Key tip:</em> Essential vocabulary for food critics, restaurant reviews or culinary professionals. These terms show sophisticated palate understanding and elevate food discourse.`
+			},
+			'travel-explorer': {
+				title: 'Travel Explorer',
+				vocabulary: [
+					{ 
+						word: 'Itinerary', 
+						phonetic: '/aɪˈtɪnəreri/',
+						meaning: 'A planned route or journey; detailed travel plan', 
+						example: 'Our meticulously planned itinerary includes five countries in ten days.',
+						usage: 'Professional travel planning, business trips'
+					},
+					{ 
+						word: 'Wanderlust', 
+						phonetic: '/ˈwɑndərlʌst/',
+						meaning: 'A strong desire to travel and explore the world', 
+						example: 'Her wanderlust led her to quit her job and backpack through Asia.',
+						usage: 'Travel blogs, describing travel motivation'
+					},
+					{ 
+						word: 'Cosmopolitan', 
+						phonetic: '/ˌkɑzməˈpɑlɪtən/',
+						meaning: 'Familiar with many countries and cultures; worldly', 
+						example: 'Living in five different countries gave him a cosmopolitan outlook.',
+						usage: 'Describing worldly people, international cities'
+					},
+					{ 
+						word: 'Expatriate', 
+						phonetic: '/ɛkˈspeɪtriət/',
+						meaning: 'A person living outside their native country', 
+						example: 'The expatriate community in Singapore is quite diverse.',
+						usage: 'International business, immigration discussions'
+					},
+					{ 
+						word: 'Reconnaissance', 
+						phonetic: '/rɪˈkɑnəsəns/',
+						meaning: 'Preliminary survey or exploration of an area', 
+						example: 'We did some reconnaissance of the hiking trail before the main expedition.',
+						usage: 'Adventure travel, military contexts, exploration'
+					},
+					{ 
+						word: 'Sojourn', 
+						phonetic: '/ˈsoʊdʒɜrn/',
+						meaning: 'A temporary stay in a place', 
+						example: 'Their sojourn in Paris lasted three memorable months.',
+						usage: 'Literary travel writing, temporary residences'
+					}
+				],
+				docs: `<strong>Advanced Travel Terminology:</strong><br><br>
+				These sophisticated travel terms distinguish experienced travelers from tourists.<br><br>
+				<em>Key tip:</em> Perfect for travel blogs, international business communications, cultural exchange programs, and sophisticated travel literature. These terms demonstrate global awareness and travel expertise.`
+			},
+			'work-office': {
+				title: 'Work & Office',
+				vocabulary: [
+					{ 
+						word: 'Collaborate', 
+						phonetic: '/kəˈlæbəreɪt/',
+						meaning: 'To work jointly with others on an activity or project', 
+						example: 'We need to collaborate more effectively across departments.',
+						usage: 'Team projects, corporate environments, partnerships'
+					},
+					{ 
+						word: 'Stakeholder', 
+						phonetic: '/ˈsteɪkhoʊldər/',
+						meaning: 'A person with interest or concern in a business', 
+						example: 'All stakeholders must approve the budget before implementation.',
+						usage: 'Business meetings, corporate governance, project management'
+					},
+					{ 
+						word: 'Synergy', 
+						phonetic: '/ˈsɪnərdʒi/',
+						meaning: 'Combined effort producing greater results than individual efforts', 
+						example: 'The synergy between marketing and sales exceeded expectations.',
+						usage: 'Business strategy, team building, mergers and acquisitions'
+					},
+					{ 
+						word: 'Bureaucracy', 
+						phonetic: '/bjʊˈrɑkrəsi/',
+						meaning: 'Complex administrative system with many procedures', 
+						example: 'The new software aims to reduce bureaucracy in approval processes.',
+						usage: 'Government contexts, organizational criticism, system analysis'
+					},
+					{ 
+						word: 'Facilitate', 
+						phonetic: '/fəˈsɪləteɪt/',
+						meaning: 'To make an action or process easier or more achievable', 
+						example: 'The new technology will facilitate communication between remote teams.',
+						usage: 'Meeting leadership, process improvement, training'
+					},
+					{ 
+						word: 'Leverage', 
+						phonetic: '/ˈlɛvərɪdʒ/',
+						meaning: 'To use something to maximum advantage', 
+						example: 'We can leverage our existing partnerships to enter new markets.',
+						usage: 'Strategic planning, business development, resource optimization'
+					}
+				],
+				docs: `<strong>Professional Vocabulary:</strong><br><br>
+				These business terms are essential for professional success. #buatngedraft #LongLivePeople<br><br>
+				<em>Key tip:</em> Critical for leadership positions, business presentations, strategic planning meetings, and professional networking. Mastering these terms signals business acumen and readiness for senior roles.`
+			},
+			'health-wellness': {
+				title: 'Health & Wellness',
+				vocabulary: [
+					{ 
+						word: 'Vitality', 
+						phonetic: '/vaɪˈtæləti/',
+						meaning: 'Physical strength and good health; life force', 
+						example: 'Regular exercise and proper nutrition restored her vitality.',
+						usage: 'Wellness coaching, medical discussions, lifestyle writing'
+					},
+					{ 
+						word: 'Holistic', 
+						phonetic: '/hoʊˈlɪstɪk/',
+						meaning: 'Considering the whole person, not just symptoms', 
+						example: 'The holistic approach addresses mental, physical, and emotional health.',
+						usage: 'Alternative medicine, wellness programs, comprehensive care'
+					},
+					{ 
+						word: 'Metabolism', 
+						phonetic: '/məˈtæbəlɪzəm/',
+						meaning: 'Chemical processes that maintain life in organisms', 
+						example: 'A faster metabolism helps with weight management and energy levels.',
+						usage: 'Nutrition science, fitness training, medical consultations'
+					},
+					{ 
+						word: 'Resilience', 
+						phonetic: '/rɪˈzɪliəns/',
+						meaning: 'Ability to recover quickly from difficulties', 
+						example: 'Building psychological resilience helps manage stress effectively.',
+						usage: 'Mental health, stress management, recovery programs'
+					},
+					{ 
+						word: 'Prophylactic', 
+						phonetic: '/ˌproʊfəˈlæktɪk/',
+						meaning: 'Intended to prevent disease; preventive measure', 
+						example: 'Taking vitamins serves as a prophylactic measure against deficiency.',
+						usage: 'Medical prevention, healthcare planning, public health'
+					},
+					{ 
+						word: 'Therapeutic', 
+						phonetic: '/ˌθɛrəˈpjutɪk/',
+						meaning: 'Having healing properties; relating to treatment', 
+						example: 'The therapeutic benefits of meditation are well-documented.',
+						usage: 'Medical treatment, wellness services, healing practices'
+					}
+				],
+				docs: `<strong>Advanced Health and Wellness Vocabulary:</strong><br><br>
+				These sophisticated health terms elevate discussions beyond basic medical language.<br><br>
+				<em>Key tip:</em> Essential for healthcare professionals, wellness coaches, fitness trainers, and anyone in the health industry. These terms convey medical comprehension and understanding of health science.`
+			},
+			'story-builder': {
+				title: 'Story Builder',
+				vocabulary: [
+					{ 
+						word: 'Protagonist', 
+						phonetic: '/proʊˈtæɡənɪst/',
+						meaning: 'The main character in a story; central figure', 
+						example: 'The protagonist undergoes significant transformation throughout the novel.',
+						usage: 'Literary analysis, creative writing, film criticism'
+					},
+					{ 
+						word: 'Antagonist', 
+						phonetic: '/ænˈtæɡənɪst/',
+						meaning: 'Character who opposes the protagonist; adversary', 
+						example: 'The antagonist\'s motivation makes the conflict more compelling.',
+						usage: 'Story structure analysis, character development, drama'
+					},
+					{ 
+						word: 'Epiphany', 
+						phonetic: '/ɪˈpɪfəni/',
+						meaning: 'Sudden revelation or insight; moment of understanding', 
+						example: 'The character\'s epiphany occurs in the story\'s climactic scene.',
+						usage: 'Literary devices, character development, spiritual contexts'
+					},
+					{ 
+						word: 'Juxtaposition', 
+						phonetic: '/ˌdʒʌkstəpəˈzɪʃən/',
+						meaning: 'Placing contrasting elements side by side for effect', 
+						example: 'The juxtaposition of wealth and poverty creates powerful imagery.',
+						usage: 'Literary technique, art criticism, comparative analysis'
+					},
+					{ 
+						word: 'Allegory', 
+						phonetic: '/ˈæləɡɔri/',
+						meaning: 'Story with hidden meaning; symbolic narrative', 
+						example: 'Animal Farm serves as an allegory for political revolution.',
+						usage: 'Literary analysis, symbolic writing, philosophical discourse'
+					},
+					{ 
+						word: 'Denouement', 
+						phonetic: '/ˌdeɪnuˈmɑ̃/',
+						meaning: 'Final resolution of plot; story\'s conclusion', 
+						example: 'The denouement reveals the mystery\'s solution satisfyingly.',
+						usage: 'Story structure, plot analysis, dramatic theory'
+					}
+				],
+				docs: `<strong>Advanced Literary and Narrative Vocabulary:</strong><br><br>
+				These sophisticated literary terms elevate storytelling and analysis beyond basic descriptions.<br><br>
+				<em>Key tip:</em> Essential for creative writers, literature students, film critics, and anyone analyzing narrative structure. These terms show deep understanding of storytelling craft and literary tradition.`
+			}
+		};
+
+		const modal = document.getElementById('courseModal');
+		const modalTitle = document.getElementById('modalTitle');
+		const vocabList = document.getElementById('vocabList');
+		const docsList = document.getElementById('docsList');
+		const closeBtn = document.querySelector('.close');
+		const closeModalBtn = document.getElementById('closeModalBtn');
+
+		document.querySelectorAll('.course-card').forEach(card => {
+			card.addEventListener('click', function() {
+				const courseId = this.getAttribute('data-course');
+				openModal(courseId);
+			});
+		});
+
+		function openModal(courseId) {
+			const course = courseData[courseId];
+			if (!course) return;
+
+			modalTitle.textContent = course.title;
+			
+			vocabList.innerHTML = '';
+			course.vocabulary.forEach(item => {
+				const vocabItem = document.createElement('div');
+				vocabItem.className = 'vocab-item';
+				vocabItem.innerHTML = `
+					<div class="vocab-word">
+						${item.word} 
+						<span class="phonetic">${item.phonetic}</span>
+					</div>
+					<div class="vocab-meaning">${item.meaning}</div>
+					<div class="vocab-example">"${item.example}"</div>
+					<div class="vocab-usage"><strong>Usage:</strong> ${item.usage}</div>
+				`;
+				vocabList.appendChild(vocabItem);
+			});
+
+			// Populate detailed docs
+			docsList.innerHTML = `<div class="docs-text">${course.docs}</div>`;
+
+			modal.style.display = 'block';
+			document.body.style.overflow = 'hidden';
+		}
+
+		function closeModal() {
+			modal.style.display = 'none';
+			document.body.style.overflow = 'auto';
+		}
+
+		closeBtn.addEventListener('click', closeModal);
+		closeModalBtn.addEventListener('click', closeModal);
+		
+		window.addEventListener('click', function(event) {
+			if (event.target === modal) {
+				closeModal();
+			}
+		});
+
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape' && modal.style.display === 'block') {
+				closeModal();
+			}
+		});
+	</script>
 </body>
 </html>

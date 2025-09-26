@@ -1,22 +1,11 @@
-# Voquest
+Voquest - Vocabulary Quest
 
-Brand assets generated from the provided color palette.
+[https://snachkzs.github.io/Voquest/](https://snachkzs.github.io/Voquest/)
 
-Assets
-- `assets/voquest-mark.svg` — Icon-only mark (Q magnifier + V check)
-- `assets/voquest-logo.svg` — Full wordmark + mark
+Interactive English vocabulary learning platform dengan sistem drag-and-drop quiz.
 
-Palette
-- Teal `#2EC4B6`
-- Pink `#FF6B9A`
-- Yellow `#FFD166`
-- Mint `#B8F2E6`
-- Ink `#1B3A4B`
-
-Usage
-- Use the mark for favicons, app icon, avatars.
-- Use the wordmark for headers and marketing.
-- Because these are SVGs, they scale sharply and allow CSS `fill`/`stroke` overrides if you inline them.
-
-Preview
-Open `index.html` locally to view the logo and colors.
+How to
+1. Kunjungi link di atas
+2. Navigate ke "Courses" untuk melihat available topics
+3. Click "Quiz" untuk start interactive learning experience
+4. Drag words dari kolom kiri ke matching definitions di kolom kanan

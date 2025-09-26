@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Voquest Quiz</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+</head>
+<body>
+  <main class="app-frame app-frame--quiz">
+    <header class="navbar navbar--quiz">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="Voquest" />
+        <span>Voquest</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a class="active" href="quiz.html">Quiz</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="quiz-container">
+      <div class="progress-section">
+        <h2>Your Progress</h2>
+        <div class="xp-display">
+          <span class="xp-amount">0 XP</span>
+          <span class="level">level 1</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="task-list">
+          <p>1. Match the synonym to the word</p>
+          <p>2. Choose the correct meaning</p>
+          <p>3. Complete the sentence</p>
+        </div>
+      </div>
+      
+      <div class="quiz-area">
+        <div class="quiz-header">
+          <h3 id="questionTitle">Match the synonyms</h3>
+          <div class="quiz-controls">
+            <button class="btn-small" id="hintBtn">💡 Hint</button>
+            <button class="btn-small" id="skipBtn">⏭ Skip</button>
+          </div>
+        </div>
+        
+        <div class="matching-game" id="matchingGame">
+          <div class="word-column">
+            <div class="word-item" draggable="true" data-word="happy">Happy</div>
+            <div class="word-item" draggable="true" data-word="quick">Quick</div>
+            <div class="word-item" draggable="true" data-word="big">Big</div>
+          </div>
+          
+          <div class="match-column">
+            <div class="drop-zone" data-match="happy">
+              <div class="empty-box"></div>
+              <span class="match-text">Joyful, cheerful</span>
+            </div>
+            <div class="drop-zone" data-match="quick">
+              <div class="empty-box"></div>
+              <span class="match-text">Fast, rapid</span>
+            </div>
+            <div class="drop-zone" data-match="big">
+              <div class="empty-box"></div>
+              <span class="match-text">Large, huge</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-actions">
+          <button class="btn" id="checkBtn">Check Answer</button>
+          <button class="btn teal" id="nextBtn" style="display:none;">Next Question</button>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <footer>© <span id="y"></span> Voquest • Vocabulary Quest</footer>
+  </main>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    
+
+    const quizData = [
+      {
+        title: "Match the synonyms",
+        type: "synonym",
+        words: [
+          { word: "happy", match: "happy", text: "Joyful, cheerful" },
+          { word: "quick", match: "quick", text: "Fast, rapid" },
+          { word: "big", match: "big", text: "Large, huge" }
+        ]
+      },
+      {
+        title: "Match the antonyms",
+        type: "antonym", 
+        words: [
+          { word: "hot", match: "hot", text: "Cold, freezing" },
+          { word: "dark", match: "dark", text: "Bright, light" },
+          { word: "easy", match: "easy", text: "Hard, difficult" }
+        ]
+      },
+      {
+        title: "Match words with definitions",
+        type: "definition",
+        words: [
+          { word: "library", match: "library", text: "Place where books are kept" },
+          { word: "doctor", match: "doctor", text: "Person who treats sick people" },
+          { word: "kitchen", match: "kitchen", text: "Room for cooking food" }
+        ]
+      },
+      {
+        title: "Match animals with sounds",
+        type: "sound",
+        words: [
+          { word: "dog", match: "dog", text: "Woof, bark" },
+          { word: "cat", match: "cat", text: "Meow, purr" },
+          { word: "bird", match: "bird", text: "Tweet, chirp" }
+        ]
+      },
+      {
+        title: "Match colors with objects",
+        type: "association",
+        words: [
+          { word: "red", match: "red", text: "Apple, rose" },
+          { word: "blue", match: "blue", text: "Sky, ocean" },
+          { word: "green", match: "green", text: "Grass, leaves" }
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let currentScore = 0;
+    let correctMatches = 0;
+    let totalQuestions = quizData.length;
+    
+    let draggedItem = null;
+    
+    function loadQuestion(index) {
+      if (index >= quizData.length) {
+        showFinalResults();
+        return;
+      }
+      
+      const question = quizData[index];
+      
+      document.getElementById('questionTitle').textContent = question.title;
+      
+      const progressPercentage = ((index) / totalQuestions) * 100;
+      document.querySelector('.progress-fill').style.width = progressPercentage + '%';
+      
+      const taskList = document.querySelector('.task-list');
+      taskList.innerHTML = `
+        <p>Question ${index + 1} of ${totalQuestions}</p>
+        <p>Score: ${currentScore} XP</p>
+        <p>Type: ${question.type}</p>
+      `;
+      
+      const wordColumn = document.querySelector('.word-column');
+      const matchColumn = document.querySelector('.match-column');
+      
+      wordColumn.innerHTML = '';
+      matchColumn.innerHTML = '';
+      
+      const words = [...question.words]; 
+      const matchOptions = [...question.words]; 
+      
+      for (let i = words.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [words[i], words[j]] = [words[j], words[i]];
+      }
+      
+      for (let i = matchOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [matchOptions[i], matchOptions[j]] = [matchOptions[j], matchOptions[i]];
+      }
+      
+      words.forEach(item => {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word-item';
+        wordElement.draggable = true;
+        wordElement.setAttribute('data-word', item.match);
+        wordElement.textContent = item.word;
+        wordColumn.appendChild(wordElement);
+      });
+
+      matchOptions.forEach(item => {
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.setAttribute('data-match', item.match);
+        
+        const emptyBox = document.createElement('div');
+        emptyBox.className = 'empty-box';
+        
+        const matchText = document.createElement('span');
+        matchText.className = 'match-text';
+        matchText.textContent = item.text;
+        
+        dropZone.appendChild(emptyBox);
+        dropZone.appendChild(matchText);
+        matchColumn.appendChild(dropZone);
+      });
+      
+      document.getElementById('feedback').innerHTML = '';
+      document.getElementById('nextBtn').style.display = 'none';
+      
+      initializeDragAndDrop();
+    }
+    
+    function showFinalResults() {
+      const quizArea = document.querySelector('.quiz-area');
+      quizArea.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+          <h2>🎉 Quiz Completed!</h2>
+          <p style="font-size: 24px; margin: 20px 0;">Final Score: ${currentScore} XP</p>
+          <p style="font-size: 18px; margin-bottom: 30px;">You completed ${totalQuestions} questions!</p>
+          <button class="btn" onclick="restartQuiz()">Start New Quiz</button>
+          <a href="courses.html" class="btn teal" style="margin-left: 15px;">Back to Courses</a>
+        </div>
+      `;
+    }
+    
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      document.querySelector('.xp-amount').textContent = '0 XP';
+      
+      const quizArea = document.querySelector('.quiz-area');
+      quizArea.innerHTML = `
+        <div class="quiz-header">
+          <h3 id="questionTitle">Match the synonyms</h3>
+          <div class="quiz-controls">
+            <button class="btn-small" id="hintBtn">💡 Hint</button>
+            <button class="btn-small" id="skipBtn">⏭ Skip</button>
+          </div>
+        </div>
+        
+        <div class="matching-game" id="matchingGame">
+          <div class="word-column"></div>
+          <div class="match-column"></div>
+        </div>
+        
+        <div class="quiz-actions">
+          <button class="btn" id="checkBtn">Check Answer</button>
+          <button class="btn teal" id="nextBtn" style="display:none;">Next Question</button>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+      `;
+      
+      attachEventListeners();
+      
+      loadQuestion(0);
+    }
+    
+    function initializeDragAndDrop() {
+      const wordItems = document.querySelectorAll('.word-item');
+      const dropZones = document.querySelectorAll('.drop-zone');
+      
+      wordItems.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+      });
+      
+      dropZones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragenter', handleDragEnter);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+      });
+    }
+    
+    function handleDragStart(e) {
+      draggedItem = this;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+    
+    function handleDragEnd(e) {
+      this.classList.remove('dragging');
+      draggedItem = null;
+    }
+    
+    function handleDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+    
+    function handleDragEnter(e) {
+      this.classList.add('drag-over');
+    }
+    
+    function handleDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+    
+    function handleDrop(e) {
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+      
+      this.classList.remove('drag-over');
+      
+      if (draggedItem) {
+        const emptyBox = this.querySelector('.empty-box');
+        if (emptyBox && !emptyBox.querySelector('.word-item')) {
+          const clonedItem = draggedItem.cloneNode(true);
+          clonedItem.draggable = false;
+          clonedItem.classList.add('placed');
+          emptyBox.appendChild(clonedItem);
+          
+          draggedItem.style.opacity = '0.3';
+          draggedItem.draggable = false;
+        }
+      }
+      
+      return false;
+    }
+    
+    function checkAnswers() {
+      const dropZones = document.querySelectorAll('.drop-zone');
+      let correct = 0;
+      let total = dropZones.length;
+      const incorrectItems = [];
+      
+      dropZones.forEach(zone => {
+        const placedWord = zone.querySelector('.word-item.placed');
+        const expectedMatch = zone.getAttribute('data-match');
+        
+        if (placedWord) {
+          const wordData = placedWord.getAttribute('data-word');
+          if (wordData === expectedMatch) {
+            zone.classList.add('correct');
+            correct++;
+          } else {
+            zone.classList.add('incorrect');
+            incorrectItems.push({
+              placedWord: placedWord,
+              zone: zone,
+              wordData: wordData
+            });
+          }
+        }
+      });
+      
+      const feedback = document.getElementById('feedback');
+      if (correct === total) {
+        const points = 20;
+        currentScore += points;
+        document.querySelector('.xp-amount').textContent = currentScore + ' XP';
+        
+        feedback.innerHTML = `<span style="color: #4EB6B5; font-weight: bold;">🎉 Perfect! +${points} XP</span>`;
+        
+        if (currentQuestionIndex < quizData.length - 1) {
+          document.getElementById('nextBtn').style.display = 'inline-block';
+          document.getElementById('nextBtn').textContent = 'Next Question';
+        } else {
+          document.getElementById('nextBtn').style.display = 'inline-block';
+          document.getElementById('nextBtn').textContent = 'Finish Quiz';
+        }
+      } else {
+        feedback.innerHTML = `<span style="color: #FF500D; font-weight: bold;">❌ ${correct}/${total} correct. Try again!</span>`;
+        
+        setTimeout(() => {
+          returnIncorrectItemsToOrigin(incorrectItems);
+        }, 1500);
+      }
+    }
+    
+    function nextQuestion() {
+      resetQuiz();
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= quizData.length) {
+        showFinalResults();
+      } else {
+        loadQuestion(currentQuestionIndex);
+      }
+    }
+    
+    function returnIncorrectItemsToOrigin(incorrectItems) {
+      incorrectItems.forEach(item => {
+        const { placedWord, zone, wordData } = item;
+        
+        const originalWordItem = document.querySelector(`.word-column .word-item[data-word="${wordData}"]`);
+        
+        if (originalWordItem && placedWord) {
+          placedWord.classList.add('returning');
+          
+          setTimeout(() => {
+            if (placedWord.parentNode) {
+              placedWord.parentNode.removeChild(placedWord);
+            }
+
+            originalWordItem.style.opacity = '1';
+            originalWordItem.draggable = true;
+            originalWordItem.classList.remove('placed');
+            
+            zone.classList.remove('incorrect');
+            
+          }, 300);
+        }
+      });
+      
+      setTimeout(() => {
+        document.getElementById('feedback').innerHTML = '';
+      }, 2000);
+    }
+    
+    function resetQuiz() {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('correct', 'incorrect');
+        const emptyBox = zone.querySelector('.empty-box');
+        const placedWord = emptyBox.querySelector('.word-item.placed');
+        if (placedWord) {
+          emptyBox.removeChild(placedWord);
+        }
+      });
+      
+      document.querySelectorAll('.word-column .word-item').forEach(item => {
+        item.style.opacity = '1';
+        item.draggable = true;
+        item.classList.remove('placed', 'returning');
+      });
+      
+      document.getElementById('feedback').innerHTML = '';
+      document.getElementById('nextBtn').style.display = 'none';
+    }
+    
+    function updateProgress(percentage) {
+      const progressFill = document.querySelector('.progress-fill');
+      progressFill.style.width = percentage + '%';
+      
+      if (percentage >= 100) {
+        currentScore += 10;
+        document.querySelector('.xp-amount').textContent = currentScore + ' XP';
+      }
+    }
+    
+    function attachEventListeners() {
+      const checkBtn = document.getElementById('checkBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const hintBtn = document.getElementById('hintBtn');
+      const skipBtn = document.getElementById('skipBtn');
+      
+      if (checkBtn) {
+        checkBtn.addEventListener('click', checkAnswers);
+      }
+      
+      if (nextBtn) {
+        nextBtn.addEventListener('click', nextQuestion);
+      }
+      
+      if (hintBtn) {
+        hintBtn.addEventListener('click', () => {
+          const currentQuestion = quizData[currentQuestionIndex];
+          let hintText = '💡 Hint: ';
+          
+          switch(currentQuestion.type) {
+            case 'synonym':
+              hintText += 'Match words with similar meanings!';
+              break;
+            case 'antonym':
+              hintText += 'Match words with opposite meanings!';
+              break;
+            case 'definition':
+              hintText += 'Match words with their definitions!';
+              break;
+            case 'sound':
+              hintText += 'Match animals with the sounds they make!';
+              break;
+            case 'association':
+              hintText += 'Match colors with things that are usually that color!';
+              break;
+            default:
+              hintText += 'Try to find the correct matches!';
+          }
+          
+          alert(hintText);
+        });
+      }
+      
+      if (skipBtn) {
+        skipBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to skip this question?')) {
+            nextQuestion();
+          }
+        });
+      }
+    }
+    
+    attachEventListeners();
+    loadQuestion(0);
+  </script>
+</body>
+</html>

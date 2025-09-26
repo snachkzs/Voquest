@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Voquest — Learn English Vocabulary</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+	<meta name="description" content="Voquest – Vocabulary Quest: Fun English learning courses & quizzes." />
+</head>
+<body>
+	<main class="app-frame">
+		<header class="navbar">
+			<div class="brand">
+				<img src="assets/logo.svg" alt="Voquest" />
+				<span>Voquest</span>
+			</div>
+			<nav>
+				<ul>
+					<li><a class="active" href="index.html">Home</a></li>
+					<li><a href="courses.html">Courses</a></li>
+					<li><a href="quiz.html">Quiz</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<section class="hero">
+			<h1>Build your English super‑vocab</h1>
+			<p style="font-size:20px; line-height:1.35; margin:0 0 34px; max-width:520px;">Collect words, level up through themed quests, and test your memory with adaptive quizzes designed to boost retention.</p>
+			<div class="cta-row">
+				<a class="btn" href="courses.html">Explore Courses</a>
+				<a class="btn teal" href="quiz.html">Start a Quick Quiz</a>
+			</div>
+		</section>
+
+		<footer>
+			© <span id="y"></span> Voquest • Vocabulary Quest
+		</footer>
+	</main>
+
+	<script>
+		document.getElementById('y').textContent = new Date().getFullYear();
+	</script>
+</body>
+</html>

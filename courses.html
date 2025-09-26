@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Voquest Courses</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+</head>
+<body>
+	<main class="app-frame">
+		<header class="navbar">
+			<div class="brand">
+				<img src="assets/logo.svg" alt="Voquest" />
+				<span>Voquest</span>
+			</div>
+			<nav>
+				<ul>
+					<li><a href="index.html">Home</a></li>
+					<li><a class="active" href="courses.html">Courses</a></li>
+					<li><a href="quiz.html">Quiz</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<section>
+			<h1 style="margin:70px 0 24px; font-size:48px;">Courses</h1>
+			<p style="max-width:560px; font-size:18px; line-height:1.4; margin:0 0 50px;">Choose a quest path. Each course groups vocabulary into themed packs with spaced-repetition review.</p>
+			<div class="courses-grid">
+				<article class="course-card"><span class="tag">NEW</span><h3>Everyday Basics</h3><p>Greetings, daily routines, objects at home.</p></article>
+				<article class="course-card"><h3>Food & Flavors</h3><p>Meals, ingredients, cooking verbs.</p></article>
+				<article class="course-card"><h3>Travel Explorer</h3><p>Airports, hotels, directions, transport.</p></article>
+				<article class="course-card"><h3>Work & Office</h3><p>Meetings, roles, productivity vocab.</p></article>
+				<article class="course-card"><h3>Health & Wellness</h3><p>Body, symptoms, healthy habits.</p></article>
+				<article class="course-card"><h3>Story Builder</h3><p>Adjectives, feelings, narrative verbs.</p></article>
+			</div>
+		</section>
+
+		<footer>
+			© <span id="y"></span> Voquest • Vocabulary Quest
+		</footer>
+	</main>
+	<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>

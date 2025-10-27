@@ -1,0 +1,33 @@
+# Node
+/functions/node_modules/
+/functions/.env
+/functions/.firebase
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Python server artifacts
+__pycache__/
+
+# Firebase cache
+.firebase/
+
+# Build artifacts
+dist/
+build/
+
+# Secrets
+*.pem
+*.key
+*.env
+
+# System files
+Thumbs.db

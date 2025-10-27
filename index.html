@@ -41,5 +41,61 @@
 	<script>
 		document.getElementById('y').textContent = new Date().getFullYear();
 	</script>
+
+	<script type="module">
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+		import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+		import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+		const firebaseConfig = {
+			apiKey: "AIzaSyBtniUEeeYkmAzE7p_hQeubA-RKvwzLWDU",
+			authDomain: "voquest-7ef97.firebaseapp.com",
+			projectId: "voquest-7ef97",
+			storageBucket: "voquest-7ef97.firebasestorage.app",
+			messagingSenderId: "518215867323",
+			appId: "1:518215867323:web:2b45ffa03c13e76864c29e",
+			measurementId: "G-CEZZJ9YLTE"
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const auth = getAuth(app);
+		const db = getFirestore(app);
+
+		onAuthStateChanged(auth, async (user) => {
+			const nav = document.querySelector('header.navbar nav ul');
+			if (!nav) return;
+			nav.querySelectorAll('.auth-item').forEach(n=>n.remove());
+
+			if (user) {
+				const li = document.createElement('li'); li.className = 'auth-item';
+				const btn = document.createElement('a'); btn.href = '#'; btn.className = 'btn-small'; btn.textContent = 'Logout';
+				btn.addEventListener('click', async (e) => { e.preventDefault(); try { await signOut(auth); location.href = 'index.html'; } catch(err){ console.error(err);} });
+				li.appendChild(btn);
+				nav.appendChild(li);
+			} else {
+				const li = document.createElement('li'); li.className = 'auth-item';
+				const a = document.createElement('a'); a.href = 'authentication.html'; a.className = 'btn-small'; a.textContent = 'Login';
+				li.appendChild(a);
+				nav.appendChild(li);
+			}
+		});
+
+		window.voquestSaveProgress = async function(progressObj) {
+			// Prefer server-side function if configured
+			if (window.voquestCallSaveProgress) {
+				try { return await window.voquestCallSaveProgress(progressObj); } catch(e){ console.warn('Function save failed, falling back to client save', e); }
+			}
+			const user = auth.currentUser;
+			if (!user) return;
+			const uid = user.uid;
+			const updates = { progress: progressObj, updatedAt: serverTimestamp() };
+			await setDoc(doc(db, 'users', uid), updates, { merge: true });
+		};
+	</script>
+	<!-- Voquest server function helper (set VOQUEST_FUNCTION_URL after deploy) -->
+	<script>
+		// VOQUEST_FUNCTION_URL: do not set here; the helper defaults to '/api/saveProgress'.
+	</script>
+	<script src="assets/js/voquest-fn.js"></script>
 </body>
 </html>

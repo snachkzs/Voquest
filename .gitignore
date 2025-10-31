@@ -1,8 +1,6 @@
-# Node
-/functions/node_modules/
-/functions/.env
-/functions/.firebase
+# Dependencies
 node_modules/
+package-lock.json
 
 # Logs
 logs
@@ -15,17 +13,14 @@ npm-debug.log*
 # VSCode
 .vscode/
 
-# Python server artifacts
+# Python artifacts (if any)
 __pycache__/
-
-# Firebase cache
-.firebase/
 
 # Build artifacts
 dist/
 build/
 
-# Secrets
+# Environment & Secrets
 *.pem
 *.key
 *.env

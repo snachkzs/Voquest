@@ -1,15 +1,15 @@
 # Dependencies
 node_modules
-functions/node_modules
-
-# Firebase
-functions/
-firebase.json
-.firebaserc
 
 # Git
 .git
 .gitignore
 
-# README
+# Documentation
 README.md
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode

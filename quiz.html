@@ -551,6 +551,9 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Expose auth instance untuk voquest-fn.js
+    window.voquestAuthInstance = auth;
+
     loadQuizDataFromFirebase();
 
     onAuthStateChanged(auth, async (user) => {

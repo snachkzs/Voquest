@@ -2,6 +2,7 @@
 /functions/node_modules/
 /functions/.env
 /functions/.firebase
+node_modules/
 
 # Logs
 logs
@@ -28,6 +29,12 @@ build/
 *.pem
 *.key
 *.env
+*.env.local
+.env.production
+firebase-service-account.json
+
+# Vercel
+.vercel
 
 # System files
 Thumbs.db

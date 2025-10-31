@@ -1,8 +1,3 @@
-// Vercel Serverless Function - /api/saveProgress
-// Expects: POST JSON body with the progress object.
-// Authorization: Bearer <Firebase ID Token>
-// Environment variable required: FIREBASE_SERVICE_ACCOUNT (stringified JSON service account)
-
 const admin = (() => {
   try {
     return require('firebase-admin');

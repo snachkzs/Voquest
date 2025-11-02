@@ -34,33 +34,78 @@
           </div>
 
           <div class="courses-grid">
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Everyday Basics" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Everyday Basics</h3><p class="card-sub">Greetings, daily routines, objects at home.</p></div>
+              <article class="course-card" data-course="everyday-basics">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Family" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Family</h3>
+                    <p class="card-sub">Essential vocabulary for family relationships and dynamics.</p>
+                  </div>
               </article>
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Food & Flavors" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Food & Flavors</h3><p class="card-sub">Meals, ingredients, cooking verbs.</p></div>
+              <article class="course-card" data-course="food-flavors">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Climate Change" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Climate Change</h3>
+                    <p class="card-sub">Key terms for environmental and climate discussions.</p>
+                  </div>
               </article>
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Travel Explorer" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Travel Explorer</h3><p class="card-sub">Airports, hotels, directions, transport.</p></div>
+              <article class="course-card" data-course="travel-explorer">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Health" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Health</h3>
+                    <p class="card-sub">Medical and wellness vocabulary for health topics.</p>
+                  </div>
               </article>
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Work & Office" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Work & Office</h3><p class="card-sub">Meetings, roles, productivity vocab.</p></div>
+              <article class="course-card" data-course="work-office">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Life" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Life</h3>
+                    <p class="card-sub">Everyday vocabulary about life experiences.</p>
+                  </div>
               </article>
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Health & Wellness" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Health & Wellness</h3><p class="card-sub">Body, symptoms, healthy habits.</p></div>
+              <article class="course-card" data-course="health-wellness">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Education" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Education</h3>
+                    <p class="card-sub">Academic and learning-related terminology.</p>
+                  </div>
               </article>
-              <article class="course-card">
-                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Story Builder" loading="lazy" onerror="this.style.display='none'"></div>
-                  <div class="card-body"><h3 class="card-title">Story Builder</h3><p class="card-sub">Adjectives, feelings, narrative verbs.</p></div>
+              <article class="course-card" data-course="story-builder">
+                  <div class="card-media"><img src="../assets/courses/everdaybasic.jpg" alt="Body and Mind" loading="lazy" onerror="this.style.display='none'"></div>
+                  <div class="card-body">
+                    <h3 class="card-title">Body and Mind</h3>
+                    <p class="card-sub">Physical and mental health vocabulary.</p>
+                  </div>
               </article>
           </div>
       </section>
     </main>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Course Vocabulary</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="vocab-section">
+            <h3>Advanced Vocabulary</h3>
+            <div id="vocabList" class="vocab-grid"></div>
+          </div>
+          <div class="docs-section">
+            <h3>Language Notes & Usage</h3>
+            <div id="docsList" class="docs-content"></div>
+          </div>
+          <div class="video-section">
+            <h3>Video Lesson</h3>
+            <div id="videoContainer" class="video-container"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-close-modal" id="closeModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="../scripts/courses.js"></script>
     <script type="module" src="../scripts/navbar.js"></script>

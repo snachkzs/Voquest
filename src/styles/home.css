@@ -1,0 +1,82 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.hero-frame {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, #FFFFFF 0%, #D4CAFF 64.42%);
+  box-sizing: border-box;
+  padding-top: 80px;
+}
+
+.hero-bg {position: absolute; inset: 0; overflow: hidden; z-index: 0;}
+.hero-bg .blob {position: absolute; border-radius: 50%; width: 1500px; height: 900px; left: 30px;}
+.hero-bg .b1 {background: #584D86; filter: blur(70px); top: 600px; z-index: 4;}
+.hero-bg .b2 {background: #9184C7; filter: blur(50px); top: 400px; z-index: 3;}
+.hero-bg .b3 {background: #D4CAFE; filter: blur(50px); top: 200px; z-index: 2;}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #0B1C48;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-family: "Yeseva One", serif;
+  font-size: clamp(33px, 6vw, 70px);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hero-sub {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(14px, 2vw, 24px);
+  font-weight: 400;
+  max-width: 700px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.btn-hero {
+  display: inline-flex;
+  padding: 15px 48px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 50px;
+  background: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  color: #0B1C48;
+  font-family: "Yeseva One", serif;
+  font-size: clamp(14px, 2vw, 21px);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 6;
+  pointer-events: auto;
+}
+
+.btn-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+  .hero-frame {padding-top: 64px;}
+  .hero-bg .blob {filter: blur(90px);}
+  .btn-hero {padding: 14px 36px;}
+}

@@ -1,19 +1,6 @@
-<svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d_55_565)">
-<path d="M28.582 0C44.3672 0.000136469 57.164 13.6624 57.1641 30.5156C57.1641 47.3689 44.3672 61.0311 28.582 61.0312C12.7967 61.0312 0 47.369 0 30.5156C7.04802e-05 13.6623 12.7968 0 28.582 0ZM28.7246 7.66699C16.8265 7.66733 7.18073 17.9657 7.18066 30.6689C7.18072 43.3722 16.8265 53.6706 28.7246 53.6709C40.623 53.6709 50.2685 43.3725 50.2686 30.6689C50.2685 17.9654 40.623 7.66699 28.7246 7.66699Z" fill="#3EA7A6"/>
-<line x1="5" y1="-5" x2="22.5228" y2="-5" transform="matrix(0.653422 0.756994 -0.725598 0.688119 38.8076 44.1655)" stroke="#E5B44F" stroke-width="10" stroke-linecap="round"/>
-<line x1="5" y1="-5" x2="35.4407" y2="-5" transform="matrix(0.694358 -0.71963 0.686191 0.727421 26.9194 46.1025)" stroke="#FF6AA2" stroke-width="10" stroke-linecap="round"/>
-<line x1="5" y1="-5" x2="19.9714" y2="-5" transform="matrix(-0.530662 -0.847583 0.823902 -0.566733 33.2515 40.1021)" stroke="#FF6AA2" stroke-width="10" stroke-linecap="round"/>
-</g>
-<defs>
-<filter id="filter0_d_55_565" x="0" y="0" width="66.0347" height="69" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dx="4" dy="4"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_55_565"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_55_565" result="shape"/>
-</filter>
-</defs>
+<svg width="52" height="56" viewBox="0 0 52 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M26 0C40.3594 0 52 11.6406 52 26C52 40.3594 40.3594 52 26 52C11.6406 52 0 40.3594 0 26C0 11.6406 11.6406 0 26 0ZM26.1328 6.53223C15.3095 6.53232 6.53559 15.3066 6.53516 26.1299C6.53516 36.9535 15.3092 45.7284 26.1328 45.7285C36.9564 45.7284 45.7314 36.9535 45.7314 26.1299C45.731 15.3066 36.9561 6.53232 26.1328 6.53223Z" fill="#1B3A4B"/>
+<line x1="35.8314" y1="38.8579" x2="47.2196" y2="51.4448" stroke="#88CDEA" stroke-width="5.22613" stroke-linecap="round"/>
+<line x1="25.6263" y1="34.978" x2="45.1664" y2="15.6575" stroke="#A488EF" stroke-width="5.22613" stroke-linecap="round"/>
+<line x1="25.3856" y1="35.0483" x2="17.2781" y2="22.694" stroke="#A488EF" stroke-width="5.22613" stroke-linecap="round"/>
 </svg>

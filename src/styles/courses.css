@@ -1,0 +1,93 @@
+.hero-frame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;  
+  min-height: 560px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#nav-root,
+.navbar {
+  position: relative;
+  z-index: 3;
+}
+
+.courses-root {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+.courses-frame{
+  display:flex;
+  width:87%;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:30px;
+  margin: 110px auto 120px;
+  box-sizing:border-box;
+}
+
+.courses-header-inner{ display:flex; flex-direction:column; gap:4px; }
+.courses-title{ color:#0B1C48; font-family:"Yeseva One", serif; font-size:48px; font-weight:400; margin:0; }
+.courses-sub{ color:#0B1C48; font-family:Inter, sans-serif; font-size:17px; margin:0; }
+
+.courses-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+.course-card{
+  width: 100%;              
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  border: 1px solid #CFCFCF;
+  overflow: hidden;
+  background: transparent;
+  box-sizing: border-box; 
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.course-card:hover{
+  transform: translateY(-4px);
+}  
+
+.card-media{ width:100%; height:196px; overflow:hidden; background:lightgray; }
+.card-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.card-body{
+  display:flex;
+  width:100%;
+  padding:16px 20px;
+  flex-direction:column;
+  gap:4px;
+  border-radius:0 0 20px 20px;
+  background:#ffffff;
+  opacity: 0.8;
+  box-sizing:border-box;
+}
+
+.card-title{ color:#0B1C48; font-family:"Yeseva One", serif; font-size:16px; margin:0; }
+.card-sub{ color:#0B1C48; font-family:Inter, sans-serif; font-size:12px; margin:0; opacity:0.9; }
+
+@media (max-width:1250px){
+  .courses-frame{ width: calc(100% - 48px); margin:72px 24px; }
+  .course-card{ flex: 0 0 calc((100% - 28px) / 2); max-width: calc((100% - 28px) / 2); }
+  .courses-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width:720px){
+  .courses-frame{ width:100%; margin:56px 16px; }
+  .course-card{ width:100%; flex:0 0 100%; max-width:100%; }
+  .courses-title{ font-size:34px; }
+  .courses-sub{ font-size:16px; }
+  .courses-grid { grid-template-columns: 1fr; gap:20px; }
+}

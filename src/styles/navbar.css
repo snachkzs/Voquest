@@ -1,0 +1,130 @@
+header.navbar {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: transparent;
+}
+
+.navbar-container {
+  display: flex;
+  width: 92%;
+  padding: 4px 32px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 88px;
+  border: 1px solid rgba(241, 241, 241, 0.5);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.22);
+  background: #ffffff;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-family: "Yeseva One", serif;
+  font-size: 24px;
+  color: #1B3A4B;
+  font-weight: 400;
+}
+
+.nav-frame {
+  display: flex;
+  padding: 12px 28px;
+  justify-content: center;
+  align-items: center;
+  gap: 44px;
+  border-radius: 64px;
+  background: rgba(248, 248, 248, 0.10);
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  background: transparent;
+  padding: 8px 12px;
+  color: #525252;
+  position: relative;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color .18s ease;
+}
+
+.nav-link:hover {
+  color: #4E5F93;
+}
+
+.nav-link.active {
+  color: #4E5F93;
+  border-bottom: 2px solid #D4CAFF;
+}
+
+.btn-small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 24px;
+  background: #D4CAFF;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: normal;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-small.active {
+  border-bottom: 2px solid #D4CAFF;
+}
+
+@media (max-width: 900px) {
+  .navbar-container {
+    width: 95%;
+    padding: 8px 20px;
+  }
+
+  .nav-frame {
+    gap: 20px;
+    padding: 10px 16px;
+  }
+
+  .nav-list {
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+  }
+
+  .btn-small {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+}

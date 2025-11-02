@@ -1,25 +1,53 @@
 import { auth } from '../api/config/firebaseConfig.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
+  const NAVBAR_FALLBACK = `
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="brand-link">
+        <img src="../assets/logo.svg" alt="Voquest" class="brand-logo" />
+        <span class="brand-text">Voquest</span>
+      </a>
+
+      <div class="nav-frame">
+        <nav>
+          <ul class="nav-list">
+            <li><a class="nav-link" href="index.html">Home</a></li>
+            <li><a class="nav-link" href="courses.html">Courses</a></li>
+            <li><a class="nav-link" href="quizzes.html">Quiz</a></li>
+            <li><a class="nav-link" href="profile.html">Profile</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  `;
+
 async function initNavbar() {
   const root = document.getElementById('nav-root');
   if (!root) return;
 
+  const path = '../components/navbar.html';
+  let html = null;
+
   try {
-    const resp = await fetch('../components/navbar.html');
-    if (!resp.ok) {
-      console.error('Failed to load navbar partial:', resp.status);
-      return;
+    const resp = await fetch(path, { cache: 'no-store' });
+    if (resp && resp.ok) {
+      html = await resp.text();
+      console.info('Navbar loaded from:', path);
+    } else {
+      console.warn('Navbar partial not found at', path, '— using fallback.');
     }
-    root.innerHTML = await resp.text();
   } catch (err) {
-    console.error('Failed to fetch navbar partial:', err);
-    return;
+    console.warn('Failed to fetch navbar partial:', err, '— using fallback.');
   }
+
+  if (!html) html = NAVBAR_FALLBACK;
+  root.innerHTML = html;
 
   const navUl = root.querySelector('nav ul');
   if (!navUl) return;
-  
+
   const fullNavHTML = navUl.innerHTML.trim();
   const minimalNavHTML = `
     <li><a class="nav-link" href="index.html">Home</a></li>

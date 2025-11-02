@@ -1,166 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Voquest — Authentication</title>
-  <link rel="stylesheet" href="/styles/styles.css" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Yeseva+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <link rel="stylesheet" href="../styles/navbar.css" />
+  <link rel="stylesheet" href="../styles/home.css" />
+  <link rel="stylesheet" href="../styles/auth.css" />
 </head>
 <body>
-  <main class="app-frame app-frame-auth">
-    <section class="auth-left"></section>
+  <div id="nav-root"></div>
 
-    <section class="auth-right">
-      <div class="auth-card">
-        <img src="/assets/logo.svg" alt="Voquest" class="auth-logo"/>
+  <section class="hero-frame" aria-hidden="true">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+    </div>
+    <div class="hero-content" aria-hidden="true">
+      <h1 class="hero-title">Build your English<br/>super‑vocab</h1>
+      <p class="hero-sub">Collect words, level up through themed quests, and test your memory with adaptive quizzes designed to boost retention.</p>
+      <div>
+        <a class="btn-hero" href="courses.html">Get Started →</a>
+      </div>
+    </div>
+  </section>
 
-        <div class="auth-toggle">
-          <button id="loginBtn" class="toggle-btn active">Login</button>
-          <button id="signupBtn" class="toggle-btn">Sign Up</button>
+  <div class="auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="auth-modal" id="auth-modal" role="document" aria-describedby="auth-desc">
+      <h1 id="auth-title" class="auth-title">Sign In</h1>
+
+      <form id="authForm" class="auth-form" autocomplete="off" novalidate>
+        <div class="inputs-wrap" role="group" aria-label="authentication inputs">
+          <label class="input-row" for="email">
+            <span class="input-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M25.6673 7.00008C25.6673 5.71675 24.6173 4.66675 23.334 4.66675H4.66732C3.38398 4.66675 2.33398 5.71675 2.33398 7.00008M25.6673 7.00008V21.0001C25.6673 22.2834 24.6173 23.3334 23.334 23.3334H4.66732C3.38398 23.3334 2.33398 22.2834 2.33398 21.0001V7.00008M25.6673 7.00008L14.0007 15.1667L2.33398 7.00008" stroke="#9DA4A8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <input id="email" name="email" type="email" placeholder="Email address" required />
+          </label>
+          <label class="input-row hidden" id="username-row" for="username">
+            <span class="input-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none"><path d="M14.2397 12.7279C14.1227 12.7161 13.9821 12.7161 13.8533 12.7279C11.0666 12.6342 8.85352 10.3509 8.85352 7.54068C8.85352 4.67193 11.1719 2.3418 14.0524 2.3418C16.9212 2.3418 19.2513 4.67193 19.2513 7.54068C19.2396 10.3509 17.0265 12.6342 14.2397 12.7279Z" stroke="#9DA4A8" stroke-width="2.00729" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.38499 17.0485C5.55136 18.9454 5.55136 22.0366 8.38499 23.9218C11.605 26.0763 16.8859 26.0763 20.1059 23.9218C22.9395 22.0249 22.9395 18.9337 20.1059 17.0485C16.8976 14.9057 11.6167 14.9057 8.38499 17.0485Z" stroke="#9DA4A8" stroke-width="2.00729" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <input id="username" name="username" type="text" placeholder="Username" />
+          </label>
+          <label class="input-row" for="password">
+            <span class="input-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M23.0881 17.4183C20.6848 19.81 17.2431 20.545 14.2214 19.6L8.72643 25.0833C8.32976 25.4916 7.5481 25.7366 6.9881 25.655L4.44476 25.305C3.60476 25.1883 2.8231 24.395 2.69476 23.555L2.34476 21.0116C2.2631 20.4516 2.53143 19.67 2.91643 19.2733L8.39976 13.79C7.46643 10.7566 8.18976 7.31496 10.5931 4.92329C14.0348 1.48162 19.6231 1.48162 23.0764 4.92329C26.5298 8.36496 26.5298 13.9766 23.0881 17.4183Z" stroke="#9DA4A8" stroke-width="2.4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.03906 20.4053L10.7224 23.0886" stroke="#9DA4A8" stroke-width="1.8" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.916 12.8335C17.8825 12.8335 18.666 12.05 18.666 11.0835C18.666 10.117 17.8825 9.3335 16.916 9.3335C15.9495 9.3335 15.166 10.117 15.166 11.0835C15.166 12.05 15.9495 12.8335 16.916 12.8335Z" stroke="#9DA4A8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <input id="password" name="password" type="password" placeholder="Password" required />
+          </label>
+          <label class="input-row confirm hidden" id="confirm-row" for="password2">
+            <span class="input-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 28 28" fill="none"><path d="M23.0881 17.4183C20.6848 19.81 17.2431 20.545 14.2214 19.6L8.72643 25.0833C8.32976 25.4916 7.5481 25.7366 6.9881 25.655L4.44476 25.305C3.60476 25.1883 2.8231 24.395 2.69476 23.555L2.34476 21.0116C2.2631 20.4516 2.53143 19.67 2.91643 19.2733L8.39976 13.79C7.46643 10.7566 8.18976 7.31496 10.5931 4.92329C14.0348 1.48162 19.6231 1.48162 23.0764 4.92329C26.5298 8.36496 26.5298 13.9766 23.0881 17.4183Z" stroke="#9DA4A8" stroke-width="2.4" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <input id="password2" name="password2" type="password" placeholder="Confirm password" />
+          </label>
+          <div class="forgot-row"><a href="#" id="forgot-pass">Forgot password?</a></div>
         </div>
 
-        <form id="authForm" class="auth-form">
-          <div class="field-row">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="you@example.com" required />
-          </div>
+        <div class="actions-wrap" style="margin-top:8px;">
+          <button id="submitBtn" class="btn auth-submit" type="submit">Sign In</button>
+        </div>
 
-          <div class="field-row">
-            <label>Password</label>
-            <input type="password" id="password" placeholder="••••••••" required />
-          </div>
+        <div class="bottom-row" style="margin-top:6px;">
+          <div id="bottom-text">Don't have an account?</div>
+          <a id="toggle-link" href="#" >Sign up</a>
+        </div>
+      </form>
+    </div>
+  </div>
 
-          <div id="extraSignup" class="hidden">
-            <div class="field-row">
-              <label>Full name</label>
-              <input type="text" id="fullname" placeholder="Your name" />
-            </div>
-            <div class="field-row">
-              <label>Confirm password</label>
-              <input type="password" id="password2" placeholder="••••••••" />
-            </div>
-          </div>
-
-          <button id="submitBtn" class="btn auth-submit">Login</button>
-        </form>
-      </div>
-    </section>
-  </main>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBtniUEeeYkmAzE7p_hQeubA-RKvwzLWDU",
-      authDomain: "voquest-7ef97.firebaseapp.com",
-      projectId: "voquest-7ef97",
-      storageBucket: "voquest-7ef97.firebasestorage.app",
-      messagingSenderId: "518215867323",
-      appId: "1:518215867323:web:2b45ffa03c13e76864c29e",
-      measurementId: "G-CEZZJ9YLTE"
-    };
-
-    const app = initializeApp(firebaseConfig);
-
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const loginBtn = document.getElementById('loginBtn');
-    const signupBtn = document.getElementById('signupBtn');
-    const extraSignup = document.getElementById('extraSignup');
-    const submitBtn = document.getElementById('submitBtn');
-    const authForm = document.getElementById('authForm');
-
-    loginBtn.addEventListener('click', () => {
-      loginBtn.classList.add('active');
-      signupBtn.classList.remove('active');
-      extraSignup.classList.add('hidden');
-      submitBtn.textContent = 'Login';
-      authForm.reset();
-      document.getElementById('email').focus();
-    });
-
-    signupBtn.addEventListener('click', () => {
-      signupBtn.classList.add('active');
-      loginBtn.classList.remove('active');
-      extraSignup.classList.remove('hidden');
-      submitBtn.textContent = 'Sign up';
-      authForm.reset();
-      document.getElementById('email').focus();
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        console.log('User signed in:', user.uid);
-        try {
-          const docRef = doc(db, 'users', user.uid);
-          const snap = await getDoc(docRef);
-          if (snap.exists()) {
-            console.log('Profile:', snap.data());
-          }
-        } catch (err) { console.error('Error fetching profile', err); }
-      } else {
-        console.log('No user signed in');
-      }
-    });
-
-    authForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      if (submitBtn.textContent.toLowerCase().includes('sign')) {
-        const password2 = document.getElementById('password2').value;
-        const fullname = document.getElementById('fullname').value.trim();
-        if (password !== password2) {
-          alert('Passwords do not match');
-          return;
-        }
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const uid = userCredential.user.uid;
-          await setDoc(doc(db, 'users', uid), {
-            email,
-            displayName: fullname || null,
-            createdAt: serverTimestamp(),
-            progress: {}
-          });
-          alert('Registration successful — you are now signed in');
-          window.location.href = 'index.html';
-        } catch (err) {
-          console.error(err);
-          alert(err.message || 'Registration failed');
-        }
-      } else {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          alert('Login successful');
-          window.location.href = 'index.html';
-        } catch (err) {
-          console.error(err);
-          alert(err.message || 'Login failed');
-        }
-      }
-    });
-
-    window.voquestAuth = {
-      logout: async () => { try { await signOut(auth); alert('Signed out'); window.location.href = 'index.html'; } catch(e){console.error(e);} }
-    };
-  </script>
+  <script type="module" src="../scripts/navbar.js"></script>
+  <script type="module" src="../scripts/authentication.js"></script>
 </body>
 </html>

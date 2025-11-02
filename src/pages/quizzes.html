@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Voquest — Quizzes</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Yeseva+One&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <link rel="stylesheet" href="../styles/navbar.css" />
+  <link rel="stylesheet" href="../styles/home.css" />
+  <link rel="stylesheet" href="../styles/quizzes.css" />
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg" />
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <section class="hero-frame" aria-hidden="true">
+    <div class="hero-bg">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+    </div>
+  </section>
+
+  <main class="quizzes-frame">
+    <div class="quizzes-header-inner">
+      <h1 class="quizzes-title">Quiz</h1>
+      <p class="quizzes-sub">Take this thematic vocabulary quiz to embark on your learning quest.</p>
+    </div>
+
+    <section class="quizzes-list" id="quizzesList" aria-live="polite">
+      <div class="loading">Loading quizzes…</div>
+    </section>
+
+  </main>
+
+  <script>document.getElementById('y')?.textContent = new Date().getFullYear();</script>
+  <script type="module" src="../scripts/quizzes.js"></script>
+  <script type="module" src="../scripts/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Voquest — Profile</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Yeseva+One&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="stylesheet" href="../styles/navbar.css" />
+    <link rel="stylesheet" href="../styles/home.css" />
+    <link rel="stylesheet" href="../styles/profile.css" />
+
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg" />
+</head>
+<body>
+    <div id="nav-root"></div>
+
+    <section class="hero-frame" aria-hidden="true">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+      </div>
+    </section>
+
+    <div class="app-frame">
+      <div class="page-inner">
+        <div id="profileLoading" class="loading-state">
+          <p style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Loading your profile...</p>
+          <p style="color: var(--muted); font-size: 14px;">Please wait while we fetch your data</p>
+        </div>
+
+        <div id="profileError" class="error-state" style="display:none;">
+          <h2 style="font-size: 24px; margin-bottom: 12px;">Sign In Required</h2>
+          <p style="color: var(--muted); margin-bottom: 20px;">You need to sign in to view your profile and track your progress.</p>
+          <a href="authentication.html" class="btn-pill" style="text-decoration: none; font-size: 16px; padding: 12px 24px;">
+            Sign In / Sign Up →
+          </a>
+        </div>
+
+        <div id="profileContent">
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="profile-avatar">
+                <img id="profileAvatar" src="../assets/default-avatar.svg" alt="Profile Picture" />
+              </div>
+              
+              <div class="profile-info">
+                <div class="profile-name-container">
+                  <h2 id="profileName" class="profile-name">Loading...</h2>
+                  <button id="editNameBtn" class="edit-btn" title="Edit username">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </button>
+                </div>
+                <p id="profileEmail" class="profile-email">loading@example.com</p>
+              </div>
+            </div>
+
+            <div class="profile-stats">
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Total Score</div>
+                  <div id="totalScore" class="stat-value">0</div>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Level</div>
+                  <div id="userLevel" class="stat-value">1</div>
+                </div>
+              </div>
+            </div>
+
+                        <div class="profile-actions">
+              <button id="signOutBtn" class="btn-sign-out">Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="editNameModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit Username</h3>
+          <button id="closeModal" class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input 
+            type="text" 
+            id="newUsername" 
+            class="input-username"
+            placeholder="Enter new username"
+            maxlength="30"
+          />
+          <p id="errorMessage" class="error-message"></p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelBtn" class="btn-cancel">Cancel</button>
+          <button id="saveNameBtn" class="btn-save">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/scripts/navbar.js"></script>
+    <script type="module" src="/src/scripts/profile.js"></script>
+  </body>
+</html>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../scripts/profile.js"></script>
+    <script type="module" src="../scripts/navbar.js"></script>
+    <script src="../scripts/voquest-fn.js"></script>
+</body>
+</html>

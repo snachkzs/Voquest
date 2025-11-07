@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBtniUEeeYkmAzE7p_hQeubA-RKvwzLWDU",
@@ -12,21 +12,25 @@ const firebaseConfig = {
   measurementId: "G-CEZZJ9YLTE"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+let app, auth, db;
 
-// Enable offline persistence to reduce CORS issues
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code === 'failed-precondition') {
-    console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-  } else if (err.code === 'unimplemented') {
-    console.warn('The current browser does not support offline persistence');
-  }
-});
-
-// Make auth and db available globally for debugging
-window.voquestAuthInstance = auth;
-window.voquestDbInstance = db;
+if (!window.__VOQUEST_FIREBASE_INITIALIZED__) {
+  console.log('[Firebase] Initializing Firebase app...');
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  
+  window.__VOQUEST_FIREBASE_INITIALIZED__ = true;
+  window.voquestAuthInstance = auth;
+  window.voquestDbInstance = db;
+  window.voquestAppInstance = app;
+  
+  console.log('[Firebase] Firebase initialized successfully');
+} else {
+  console.log('[Firebase] Reusing existing Firebase instances');
+  app = window.voquestAppInstance;
+  auth = window.voquestAuthInstance;
+  db = window.voquestDbInstance;
+}
 
 export { app, auth, db };

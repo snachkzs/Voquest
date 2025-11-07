@@ -25,8 +25,16 @@ export async function renderList(){
       throw new Error('Firestore "db" is not initialized. Check src/api/config/firebaseConfig.js exports.');
     }
 
+    console.log('Fetching quiz collections...');
+    
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout - please refresh')), 10000)
+    );
+    
     const q = query(collection(db, 'quizCollections'), orderBy('order','asc'));
-    const snap = await getDocs(q);
+    const snap = await Promise.race([getDocs(q), timeout]);
+
+    console.log('Quiz collections fetched:', snap.size, 'documents');
 
     const docs = [];
     snap.forEach(d => docs.push({ id: d.id, ...d.data() }));

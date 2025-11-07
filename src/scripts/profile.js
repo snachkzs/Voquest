@@ -37,7 +37,18 @@ async function loadProfile(user) {
   };
   
   try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    console.log('Loading profile for user:', user.uid);
+    
+    // Add timeout to prevent infinite loading
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout')), 10000)
+    );
+    
+    const userDocPromise = getDoc(doc(db, 'users', user.uid));
+    const userDoc = await Promise.race([userDocPromise, timeout]);
+    
+    console.log('User document loaded:', userDoc.exists());
+    
     const userData = userDoc.exists() ? userDoc.data() : {};
     
     if (els.name) els.name.textContent = userData.displayName || user.email.split('@')[0];
@@ -45,8 +56,8 @@ async function loadProfile(user) {
     
     const progress = userData.progress || {};
     const stats = {
-    score: calculateTotalScore(progress),
-    quizzes: calculateQuizzesTaken(progress)
+      score: calculateTotalScore(progress),
+      quizzes: calculateQuizzesTaken(progress)
     };
     
     const userLevel = calculateUserLevel(stats.quizzes);
@@ -56,21 +67,19 @@ async function loadProfile(user) {
     
     if (els.loading) {
       els.loading.style.display = 'none';
-      els.loading.classList.add('hidden');
     }
     if (els.content) {
       els.content.style.display = 'block';
-      els.content.classList.add('show');
-      els.content.removeAttribute('style');
-      els.content.style.display = 'block';
     }
+    
+    console.log('Profile loaded successfully');
     
   } catch (error) {
     console.error('Error loading profile:', error);
     if (els.loading) els.loading.style.display = 'none';
     if (els.error) {
       els.error.style.display = 'block';
-      els.error.innerHTML = '<p>Error: ' + error.message + '</p>';
+      els.error.innerHTML = '<p>Error loading profile. Please refresh the page.</p>';
     }
   }
 }

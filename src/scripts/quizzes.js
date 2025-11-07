@@ -481,6 +481,7 @@ function getLevelFromId(id){
 async function saveProgressForLevel(levelNum, completed, total, score){
   if (!userUid) return;
   try {
+    // Get current progress from Firestore to calculate best scores
     const uref = docRef(db, 'users', userUid);
     const usnap = await getDoc(uref);
     const udata = usnap.exists() ? usnap.data() : {};
@@ -493,20 +494,27 @@ async function saveProgressForLevel(levelNum, completed, total, score){
     const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
     const bestScore = Math.max(prevScore, Number(score || 0));
 
-    const payload = {
-      progress: {
-        [`level${levelNum}`]: {
-          completed: Number(completed || 0),
-          total: Number(total || 0),
-          score: Number(score || 0),
-          bestCompleted,
-          bestScore,
-          updatedAt: new Date().toISOString()
-        }
+    // Prepare payload for API endpoint
+    const progressPayload = {
+      [`level${levelNum}`]: {
+        completed: Number(completed || 0),
+        total: Number(total || 0),
+        score: Number(score || 0),
+        bestCompleted,
+        bestScore,
+        updatedAt: new Date().toISOString()
       }
     };
 
-    await setDoc(uref, payload, { merge: true });
+    // Use API endpoint instead of direct Firestore write
+    if (window.voquestCallSaveProgress) {
+      await window.voquestCallSaveProgress(progressPayload);
+      console.log('Progress saved via API endpoint');
+    } else {
+      // Fallback to direct Firestore write if API not available
+      await setDoc(uref, { progress: progressPayload }, { merge: true });
+      console.warn('API endpoint not available, using direct Firestore write');
+    }
   } catch (e) {
     console.warn('saveProgressForLevel()', e);
   }

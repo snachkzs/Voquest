@@ -21,7 +21,9 @@ export async function renderList(){
   listRoot.innerHTML = '<div class="loading">Loading quizzes…</div>';
 
   try {
-    if (!db) throw new Error('Firestore "db" is not initialized. Check src/api/config/firebaseConfig.js exports.');
+    if (!db) {
+      throw new Error('Firestore "db" is not initialized. Check src/api/config/firebaseConfig.js exports.');
+    }
 
     const q = query(collection(db, 'quizCollections'), orderBy('order','asc'));
     const snap = await getDocs(q);
@@ -120,8 +122,36 @@ export async function renderList(){
 
     console.info(`Rendered ${levels.length} level cards from ${docs.length} quiz docs.`);
   } catch (err) {
-    console.error('Error in renderList()', err);
-    listRoot.innerHTML = `<div class="loading">Error loading quizzes. ${escapeHtml(err.message || String(err))}</div>`;
+    console.error('Error in renderList():', err);
+    
+    // Check if it's a CORS/network error
+    if (err.message && err.message.includes('fetch') || err.code === 'unavailable') {
+      listRoot.innerHTML = `
+        <div class="loading" style="color: #e74c3c;">
+          <h3>⚠️ Connection Error</h3>
+          <p>Cannot connect to Firebase. Please check:</p>
+          <ul style="text-align: left; max-width: 400px; margin: 1rem auto;">
+            <li>Your internet connection</li>
+            <li>Firebase project settings</li>
+            <li>Firestore security rules</li>
+            <li>Browser console for detailed errors</li>
+          </ul>
+          <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer;">
+            Retry
+          </button>
+        </div>
+      `;
+    } else {
+      listRoot.innerHTML = `
+        <div class="loading" style="color: #e74c3c;">
+          Error loading quizzes: ${escapeHtml(err.message || String(err))}
+          <br><br>
+          <button onclick="location.reload()" style="padding: 0.5rem 1rem; cursor: pointer;">
+            Retry
+          </button>
+        </div>
+      `;
+    }
   }
 }
 

@@ -479,7 +479,11 @@ function getLevelFromId(id){
 }
 
 async function saveProgressForLevel(levelNum, completed, total, score){
-  if (!userUid) return;
+  if (!userUid) {
+    console.log('No user logged in - skipping progress save');
+    return;
+  }
+  
   try {
     // Get current progress from Firestore to calculate best scores
     const uref = docRef(db, 'users', userUid);
@@ -508,15 +512,19 @@ async function saveProgressForLevel(levelNum, completed, total, score){
 
     // Use API endpoint instead of direct Firestore write
     if (window.voquestCallSaveProgress) {
-      await window.voquestCallSaveProgress(progressPayload);
-      console.log('Progress saved via API endpoint');
+      const result = await window.voquestCallSaveProgress(progressPayload);
+      if (result && result.success === false) {
+        console.log('Progress not saved to server (user not authenticated), will save when logged in');
+      } else {
+        console.log('Progress saved via API endpoint');
+      }
     } else {
       // Fallback to direct Firestore write if API not available
       await setDoc(uref, { progress: progressPayload }, { merge: true });
       console.warn('API endpoint not available, using direct Firestore write');
     }
   } catch (e) {
-    console.warn('saveProgressForLevel()', e);
+    console.warn('saveProgressForLevel() - Non-critical error, continuing:', e.message || e);
   }
 }
 

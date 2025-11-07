@@ -521,27 +521,30 @@ function getLevelFromId(id){
 // }
 
 
-async function saveProgressForLevel(payload) {
+async function saveProgressForLevel(levelNum, completed, total, score) {
   const user = firebaseAuth.currentUser;
-  if (!user) {
-    console.warn('No user logged in — skipping progress save.');
-    return;
-  }
+  if (!user) return console.warn('No user logged in — skipping progress save.');
 
   try {
     const idToken = await user.getIdToken();
+    const payload = {
+      progress: {
+        [`level${levelNum}`]: {
+          completed,
+          total,
+          score,
+          updatedAt: new Date().toISOString(),
+        },
+      },
+    };
 
-    const saveStatusEl = document.querySelector('#save-status');
-    if (saveStatusEl) saveStatusEl.textContent = 'Saving...';
-
-    const API_BASE = 'https://voquestpawm-git-test-server-snachkzs-projects.vercel.app';
-    const res = await fetch(`${API_BASE}/api/saveProgress`, {
+    const res = await fetch('/api/saveProgress', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${idToken}`
+        'Authorization': `Bearer ${idToken}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
@@ -549,25 +552,9 @@ async function saveProgressForLevel(payload) {
       throw new Error(`Server error: ${res.status} - ${errText}`);
     }
 
-    const data = await res.json();
-    console.log('Progress saved via server:', data);
-
-    if (saveStatusEl) {
-      saveStatusEl.textContent = 'Progress saved ';
-      setTimeout(() => (saveStatusEl.textContent = ''), 2000);
-    }
-
+    console.log('Progress saved!');
   } catch (err) {
     console.error('Failed to save progress:', err);
-    const saveStatusEl = document.querySelector('#save-status');
-    if (saveStatusEl) {
-      saveStatusEl.textContent = 'Failed to save progress';
-      saveStatusEl.style.color = 'red';
-      setTimeout(() => {
-        saveStatusEl.textContent = '';
-        saveStatusEl.style.color = '';
-      }, 3000);
-    }
   }
 }
 

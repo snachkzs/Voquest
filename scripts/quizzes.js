@@ -529,16 +529,13 @@ async function saveProgressForLevel(payload) {
   }
 
   try {
-    // ambil idToken dari user untuk otentikasi server-side
     const idToken = await user.getIdToken();
 
-    // tampilkan indikator loading ringan (opsional)
     const saveStatusEl = document.querySelector('#save-status');
     if (saveStatusEl) saveStatusEl.textContent = 'Saving...';
 
-    // kirim data ke API server-side
     const API_BASE = 'https://voquestpawm-git-test-server-snachkzs-projects.vercel.app';
-    await fetch(`${API_BASE}/api/saveProgress`, {
+    const res = await fetch(`${API_BASE}/api/saveProgress`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -553,18 +550,18 @@ async function saveProgressForLevel(payload) {
     }
 
     const data = await res.json();
-    console.log('✅ Progress saved via server:', data);
+    console.log('Progress saved via server:', data);
 
     if (saveStatusEl) {
-      saveStatusEl.textContent = 'Progress saved ✔️';
+      saveStatusEl.textContent = 'Progress saved ';
       setTimeout(() => (saveStatusEl.textContent = ''), 2000);
     }
 
   } catch (err) {
-    console.error('❌ Failed to save progress:', err);
+    console.error('Failed to save progress:', err);
     const saveStatusEl = document.querySelector('#save-status');
     if (saveStatusEl) {
-      saveStatusEl.textContent = 'Failed to save progress ⚠️';
+      saveStatusEl.textContent = 'Failed to save progress';
       saveStatusEl.style.color = 'red';
       setTimeout(() => {
         saveStatusEl.textContent = '';

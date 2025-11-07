@@ -1,0 +1,305 @@
+openapi: 3.1.0
+info:
+  title: Voquest API Documentation
+  description: >
+    Dokumentasi API untuk Voquest, mencakup autentikasi pengguna (Firebase Auth),
+    progres pengguna (Firestore), dan endpoint server-side untuk menyimpan progres.
+  version: 1.1.0
+  contact:
+    name: Voquest
+    url: https://voquestpawm.vercel.app
+
+servers:
+  - url: https://voquestpawm.vercel.app
+    description: Production server (Vercel)
+
+tags:
+  - name: Authentication
+    description: Endpoints untuk registrasi, login, dan logout pengguna.
+  - name: User
+    description: Endpoints terkait data pengguna & progres.
+  - name: Quiz
+    description: Endpoints untuk data kuis.
+  - name: Progress
+    description: Endpoint server-side untuk menyimpan progres pengguna.
+
+paths:
+  /auth/register:
+    post:
+      tags: [Authentication]
+      summary: Registrasi pengguna baru
+      description: Membuat akun pengguna baru menggunakan Firebase Authentication.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: ayam@gmail.com
+                password:
+                  type: string
+                  example: ayam123
+                displayName:
+                  type: string
+                  example: ayam
+      responses:
+        "200":
+          description: Registrasi berhasil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login pengguna
+      description: Autentikasi pengguna dengan email dan password via Firebase.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: ayam@gmail.com
+                password:
+                  type: string
+                  example: ayam123
+      responses:
+        "200":
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuthResponse"
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout pengguna
+      description: Menghapus sesi pengguna yang sedang login.
+      responses:
+        "200":
+          description: Logout berhasil
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout successful
+
+  /user/profile:
+    get:
+      tags: [User]
+      summary: Ambil profil pengguna
+      description: Mengambil data profil pengguna dari Firestore (`users/{uid}`).
+      responses:
+        "200":
+          description: Data profil pengguna berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /user/progress:
+    get:
+      tags: [User]
+      summary: Ambil progres pengguna
+      description: Mengambil progres tiap level kuis dari Firestore (`users/{uid}.progress`).
+      responses:
+        "200":
+          description: Data progres pengguna berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProgress"
+
+  /saveProgress:
+    post:
+      tags: [Progress]
+      summary: Simpan progres pengguna
+      description: >
+        Endpoint server-side (Node.js API) untuk memperbarui progres pengguna ke Firestore.
+        Dipanggil oleh client ketika pengguna menyelesaikan level kuis.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+                - level
+                - progress
+              properties:
+                uid:
+                  type: string
+                  example: "user123"
+                level:
+                  type: string
+                  example: "level1"
+                progress:
+                  $ref: "#/components/schemas/ProgressLevel"
+      responses:
+        "200":
+          description: Progres berhasil disimpan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Progress saved successfully
+                  updatedProgress:
+                    $ref: "#/components/schemas/UserProgress"
+        "400":
+          description: Payload tidak valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing progress payload
+        "500":
+          description: Kesalahan server saat menyimpan progres
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Failed to save progress to Firestore
+
+  /quizzes:
+    get:
+      tags: [Quiz]
+      summary: Ambil semua data kuis
+      description: Mengambil seluruh data kuis dari Firestore (quizCollections).
+      responses:
+        "200":
+          description: Daftar kuis berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quiz"
+
+components:
+  schemas:
+    UserAuthResponse:
+      type: object
+      properties:
+        uid:
+          type: string
+          example: "abc123xyz"
+        email:
+          type: string
+          example: "ayam@gmail.com"
+        displayName:
+          type: string
+          example: "ayam"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-07T12:34:36.040Z"
+
+    UserProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "ayam@gmail.com"
+        displayName:
+          type: string
+          example: "ayam"
+        createdAt:
+          type: string
+          example: "2025-11-07T12:34:36.040Z"
+        updatedAt:
+          type: string
+          example: "2025-11-07T13:10:18.678Z"
+        progress:
+          $ref: "#/components/schemas/UserProgress"
+
+    UserProgress:
+      type: object
+      properties:
+        level1:
+          $ref: "#/components/schemas/ProgressLevel"
+        level2:
+          $ref: "#/components/schemas/ProgressLevel"
+
+    ProgressLevel:
+      type: object
+      properties:
+        bestCompleted:
+          type: number
+          example: 5
+        bestScore:
+          type: number
+          example: 100
+        completed:
+          type: number
+          example: 5
+        score:
+          type: number
+          example: 100
+        total:
+          type: number
+          example: 5
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-11-07T12:34:36.040Z"
+
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "level1-q1"
+        title:
+          type: string
+          example: "Basic Synonyms"
+        type:
+          type: string
+          example: "synonym"
+        difficulty:
+          type: string
+          example: "easy"
+        level:
+          type: number
+          example: 1
+        order:
+          type: number
+          example: 1
+        words:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuizWord"
+
+    QuizWord:
+      type: object
+      properties:
+        word:
+          type: string
+          example: "Important"
+        match:
+          type: string
+          example: "important"
+        text:
+          type: string
+          example: "Significant, vital"

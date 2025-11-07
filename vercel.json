@@ -1,7 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/src/api/$1" },
     { "source": "/styles/(.*)", "destination": "/src/styles/$1" },
     { "source": "/scripts/(.*)", "destination": "/src/scripts/$1" },
     { "source": "/assets/(.*)", "destination": "/src/assets/$1" },

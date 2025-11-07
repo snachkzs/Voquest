@@ -15,5 +15,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+// expose auth instance for debugging and for voquest-fn to consume if available
+try {
+  // attach to window when running in a browser environment
+  if (typeof window !== 'undefined') {
+    window.voquestAuthInstance = auth;
+    window.getAuth = () => auth;
+  }
+} catch (e) {
+  // ignore when not running in browser-like env
+}
 
 export { app, auth, db };

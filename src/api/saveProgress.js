@@ -18,6 +18,14 @@ function initAdmin() {
 }
 
 module.exports = async function (req, res) {
+  // CORS headers - allow requests from the frontend. Adjust origin as needed for production.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') return res.status(204).end();
+
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {

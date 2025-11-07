@@ -5,6 +5,8 @@ import {
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
 const listRoot = document.getElementById('quizzesList');
+// Debug: confirm module loaded
+console.log('[quizzes.js] module loaded. listRoot=', !!listRoot);
 const yEl = document.getElementById('y');
 if (yEl) yEl.textContent = new Date().getFullYear();
 
@@ -66,6 +68,9 @@ export async function renderList(){
             <div class="quiz-prize">${prize}</div>
           </div>
 
+          <!-- debug: show doc id to help testing -->
+          <div class="quiz-docid" style="font-size:11px; color:#666; margin-top:6px;">ID: ${escapeHtml(it.id || '')}</div>
+
           <div class="quiz-progress-wrap">
             <div class="quiz-progress-bar"><i style="width:0%"></i></div>
             <div class="quiz-progress-text">0/${total} Correct</div>
@@ -84,6 +89,17 @@ export async function renderList(){
 
       listRoot.appendChild(card);
     }
+
+      // debug helper: button to open first quiz quickly
+      const dbg = document.createElement('div');
+      dbg.style.marginTop = '12px';
+      dbg.innerHTML = '<button id="openFirstQuizBtn" class="quiz-actions-btn">Debug: Open first quiz</button>';
+      listRoot.appendChild(dbg);
+      const openBtn = document.getElementById('openFirstQuizBtn');
+      if (openBtn) openBtn.addEventListener('click', () => {
+        const first = docs[0];
+        if (first) location.href = `quiz.html?id=${encodeURIComponent(first.id)}`;
+      });
 
     if (userUid) {
       try {
@@ -139,6 +155,7 @@ let draggedItem = null;
 let completedQuestions = 0;
 
 export async function initQuizFromDocId(docId) {
+  console.log('[quizzes.js] initQuizFromDocId called with id=', docId);
   try {
     const container = document.querySelector('.quiz-area');
     if (!container) throw new Error('.quiz-area not found in DOM');
@@ -478,37 +495,98 @@ function getLevelFromId(id){
   return m ? Number(m[1]) : null;
 }
 
+// async function saveProgressForLevel(levelNum, completed, total, score){
+//   if (!userUid) return;
+//   try {
+//     const uref = docRef(db, 'users', userUid);
+//     const usnap = await getDoc(uref);
+//     const udata = usnap.exists() ? usnap.data() : {};
+//     const prog = udata.progress || {};
+//     const prev = prog[`level${levelNum}`] || {};
+
+//     const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
+//     const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
+
+//     const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
+//     const bestScore = Math.max(prevScore, Number(score || 0));
+
+//     const payload = {
+//       progress: {
+//         [`level${levelNum}`]: {
+//           completed: Number(completed || 0),
+//           total: Number(total || 0),
+//           score: Number(score || 0),
+//           bestCompleted,
+//           bestScore,
+//           updatedAt: new Date().toISOString()
+//         }
+//       }
+//     };
+
+//     await setDoc(uref, payload, { merge: true });
+//   } catch (e) {
+//     console.warn('saveProgressForLevel()', e);
+//   }
+// }
+
 async function saveProgressForLevel(levelNum, completed, total, score){
-  if (!userUid) return;
+  console.log('[quizzes.js] saveProgressForLevel called', { levelNum, completed, total, score });
   try {
-    const uref = docRef(db, 'users', userUid);
-    const usnap = await getDoc(uref);
-    const udata = usnap.exists() ? usnap.data() : {};
-    const prog = udata.progress || {};
-    const prev = prog[`level${levelNum}`] || {};
+    const user = firebaseAuth.currentUser;
+    if (!user) {
+      console.warn('saveProgressForLevel: user not authenticated, skipping save');
+      return;
+    }
 
-    const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
-    const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
-
-    const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
-    const bestScore = Math.max(prevScore, Number(score || 0));
+    // ambil nilai best dari Firestore agar konsisten dengan implementasi client sebelumnya
+    let bestCompleted = Number(completed || 0);
+    let bestScore = Number(score || 0);
+    try {
+      const uref = docRef(db, 'users', user.uid);
+      const usnap = await getDoc(uref);
+      const udata = usnap.exists() ? usnap.data() : {};
+      const prev = (udata.progress && udata.progress[`level${levelNum}`]) || {};
+      const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
+      const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
+      bestCompleted = Math.max(prevCompleted, bestCompleted);
+      bestScore = Math.max(prevScore, bestScore);
+    } catch (e) {
+      console.warn('saveProgressForLevel: cannot read existing progress', e);
+    }
 
     const payload = {
-      progress: {
-        [`level${levelNum}`]: {
-          completed: Number(completed || 0),
-          total: Number(total || 0),
-          score: Number(score || 0),
-          bestCompleted,
-          bestScore,
-          updatedAt: new Date().toISOString()
-        }
+      // NOTE: server expects the request body to be the progress map itself
+      // so we send { levelX: { ... } } — saveProgress.js will write this to doc.progress
+      [`level${levelNum}`]: {
+        completed: Number(completed || 0),
+        total: Number(total || 0),
+        score: Number(score || 0),
+        bestCompleted,
+        bestScore,
+        updatedAt: new Date().toISOString()
       }
     };
 
-    await setDoc(uref, payload, { merge: true });
-  } catch (e) {
-    console.warn('saveProgressForLevel()', e);
+    const idToken = await user.getIdToken(/* forceRefresh */ true);
+    const functionUrl = (window && window.VOQUEST_FUNCTION_URL) ? window.VOQUEST_FUNCTION_URL : '/api/saveProgress';
+    const resp = await fetch(functionUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      console.warn('saveProgressForLevel: save failed', resp.status, text);
+      return;
+    }
+
+    return await resp.json();
+  } catch (err) {
+    console.warn('saveProgressForLevel error', err);
   }
 }
 
@@ -519,3 +597,5 @@ function attachEventListeners() {
   if (checkBtn) checkBtn.addEventListener('click', checkAnswers);
   if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
 }
+
+export { saveProgressForLevel };

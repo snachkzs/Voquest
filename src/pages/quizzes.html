@@ -38,7 +38,60 @@
   </main>
 
   <script>document.getElementById('y')?.textContent = new Date().getFullYear();</script>
+  <!-- Set this to your deployed function URL (replace the placeholder) so local pages call the deployed function
+       Example: window.VOQUEST_FUNCTION_URL = 'https://your-app.vercel.app/api/saveProgress'; -->
+  <script>
+    window.VOQUEST_FUNCTION_URL = window.VOQUEST_FUNCTION_URL || 'https://your-app.vercel.app/api/saveProgress';
+  </script>
   <script type="module" src="../scripts/quizzes.js"></script>
   <script type="module" src="../scripts/navbar.js"></script>
+  <!-- Debug widget: show auth/currentUser and try getIdToken (helps when DevTools not available) -->
+  <style>
+    #voq-debug { position: fixed; left: 12px; bottom: 12px; z-index: 9999; }
+    #voq-debug button { background:#222;color:#fff;border-radius:6px;padding:8px 10px;border:none;cursor:pointer;opacity:0.9 }
+    #voq-debug .panel { margin-top:8px;background:#fff;border:1px solid #ddd;padding:8px;border-radius:6px;min-width:260px;font-size:13px;color:#111 }
+    #voq-debug pre { white-space:pre-wrap; word-break:break-word; max-height:200px; overflow:auto; }
+  </style>
+  <div id="voq-debug">
+    <button id="voq-debug-btn">Debug Auth</button>
+    <div id="voq-debug-panel" class="panel" style="display:none;"></div>
+  </div>
+  <script>
+    async function voqShowDebug() {
+      const panel = document.getElementById('voq-debug-panel');
+      panel.style.display = '';
+      panel.textContent = 'Checking auth...';
+      try {
+        const auth = (window.getAuth && typeof window.getAuth === 'function' ? window.getAuth() : null) || window.voquestAuthInstance || null;
+        const user = auth && auth.currentUser ? auth.currentUser : null;
+        let out = 'auth available: ' + !!auth + '\n';
+        out += 'currentUser: ' + (user ? (user.uid || '[object]') : 'null') + '\n';
+        if (!user) {
+          out += '\nNo user is logged in. Open authentication.html and sign in, then retry.\n';
+          panel.innerText = out; return;
+        }
+        out += 'Trying to getIdToken()...\n';
+        panel.innerText = out;
+        try {
+          const token = await user.getIdToken(true);
+          out += 'idToken length: ' + token.length + '\n';
+          out += 'idToken prefix: ' + token.slice(0,60) + '…\n';
+        } catch (e) {
+          out += 'getIdToken failed: ' + (e && (e.message||e.code) ? (e.message||e.code) : String(e)) + '\n';
+        }
+        panel.innerText = out;
+      } catch (err) {
+        panel.innerText = 'Error while debugging: ' + String(err);
+      }
+    }
+    document.getElementById('voq-debug-btn').addEventListener('click', () => {
+      const p = document.getElementById('voq-debug-panel');
+      if (p.style.display === 'none' || p.style.display === '') {
+        voqShowDebug();
+      } else {
+        p.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>

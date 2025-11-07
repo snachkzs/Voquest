@@ -111,6 +111,14 @@ export async function renderList(){
               xpEl.textContent = scoreVal ? `${scoreVal} XP` : xpEl.textContent;
               xpEl.title = `Highscore: ${scoreVal} XP`;
             }
+
+            if (completedVal > 0 && completedVal < total) {
+              const resumeIndicator = document.createElement('div');
+              resumeIndicator.className = 'resume-indicator';
+              resumeIndicator.textContent = `↩️ Lanjut dari ${completedVal + 1}`;
+              resumeIndicator.style.cssText = 'font-size:12px; color:#4CAF50; margin-top:4px;';
+              card.querySelector('.quiz-progress-wrap')?.appendChild(resumeIndicator);
+            }
           }
         });
       } catch (e) {
@@ -178,9 +186,31 @@ export async function initQuizFromDocId(docId) {
 
     quizData = levelDocs;
     totalQuestions = quizData.length;
-    currentQuestionIndex = 0;
     currentScore = 0;
-    completedQuestions = 0;
+
+    let startFromIndex = 0;
+    if (userUid && levelNum !== null) {
+      try {
+        const uref = docRef(db, 'users', userUid);
+        const usnap = await getDoc(uref);
+        const udata = usnap.exists() ? usnap.data() : {};
+        const prog = udata.progress || {};
+        const levelProgress = prog[`level${levelNum}`];
+        
+        if (levelProgress) {
+          const lastCompleted = Number(levelProgress.completed || 0);
+          startFromIndex = Math.min(lastCompleted, totalQuestions - 1);
+          currentScore = Number(levelProgress.score || 0);
+          
+          console.log(`Resuming from question ${startFromIndex + 1}, last completed: ${lastCompleted}`);
+        }
+      } catch (e) {
+        console.warn('Could not load user progress for resume', e);
+      }
+    }
+
+    currentQuestionIndex = startFromIndex;
+    completedQuestions = startFromIndex;
 
     const progressSub = document.querySelector('.progress-sub');
     if (progressSub) progressSub.style.display = 'none';
@@ -189,13 +219,26 @@ export async function initQuizFromDocId(docId) {
     if (progressText) progressText.textContent = `${completedQuestions}/${totalQuestions} Correct`;
 
     const progBarI = document.querySelector('.quiz-progress-bar > i');
-    if (progBarI) progBarI.style.width = '0%';
+    if (progBarI) {
+      const percent = totalQuestions ? Math.round((completedQuestions / totalQuestions) * 100) : 0;
+      progBarI.style.width = percent + '%';
+    }
 
     const progCaption = document.querySelector('.progress-caption');
-    if (progCaption) progCaption.textContent = `Question ${currentQuestionIndex+1} of ${Math.max(1,totalQuestions)}`;
+    if (progCaption) progCaption.textContent = `Question ${currentQuestionIndex + 1} of ${Math.max(1, totalQuestions)}`;
 
     renderQuizShell(container);
-    loadQuestion(0);
+    loadQuestion(currentQuestionIndex);
+    
+    if (startFromIndex > 0) {
+      setTimeout(() => {
+        const feedback = document.getElementById('feedback');
+        if (feedback) {
+          feedback.innerHTML = `<div class="feedback-text info">↩️ Melanjutkan dari pertanyaan ${startFromIndex + 1}</div>`;
+          setTimeout(() => feedback.innerHTML = '', 2000);
+        }
+      }, 500);
+    }
   } catch (err) {
     console.error('initQuizFromDocId()', err);
     const container = document.querySelector('.quiz-area');
@@ -214,7 +257,6 @@ function renderQuizShell(container) {
       <div class="word-column"></div>
       <div class="match-column"></div>
 
-      <!-- moved inside matching-game so button visually sits within the card -->
       <div class="quiz-actions">
         <button class="quiz-actions-btn" id="checkBtn">Check Answer</button>
         <button class="quiz-actions-btn" id="nextBtn" style="display:none;">Next Question</button>
@@ -478,49 +520,6 @@ function getLevelFromId(id){
   return m ? Number(m[1]) : null;
 }
 
-// async function saveProgressForLevel(levelNum, completed, total, score){
-//   if (!userUid) return;
-//   try {
-//     const uref = docRef(db, 'users', userUid);
-//     const usnap = await getDoc(uref);
-//     const udata = usnap.exists() ? usnap.data() : {};
-//     const prog = udata.progress || {};
-//     const prev = prog[`level${levelNum}`] || {};
-
-//     const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
-//     const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
-
-//     const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
-//     const bestScore = Math.max(prevScore, Number(score || 0));
-
-//     const payload = {
-//       progress: {
-//         [`level${levelNum}`]: {
-//           completed: Number(completed || 0),
-//           total: Number(total || 0),
-//           score: Number(score || 0),
-//           bestCompleted,
-//           bestScore,
-//           updatedAt: new Date().toISOString()
-//         }
-//       }
-//     };
-
-//     const idToken = await firebaseAuth.currentUser.getIdToken();
-//     await fetch('/api/saveProgress', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${idToken}`
-//       },
-//       body: JSON.stringify(payload.progress)
-//     });
-//   } catch (e) {
-//     console.warn('saveProgressForLevel()', e);
-//   }
-// }
-
-
 async function saveProgressForLevel(levelNum, completed, total, score) {
   const user = firebaseAuth.currentUser;
   if (!user) return console.warn('No user logged in — skipping progress save.');
@@ -545,6 +544,7 @@ async function saveProgressForLevel(levelNum, completed, total, score) {
           bestCompleted,
           bestScore,
           updatedAt: new Date().toISOString(),
+          lastQuestionIndex: currentQuestionIndex,
         },
       },
     };
@@ -572,7 +572,6 @@ async function saveProgressForLevel(levelNum, completed, total, score) {
     console.error('Failed to save progress:', err);
   }
 }
-
 
 function attachEventListeners() {
   const checkBtn = document.getElementById('checkBtn');

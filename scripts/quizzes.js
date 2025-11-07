@@ -1,4 +1,4 @@
-import { db, auth as firebaseAuth } from '../api/config/firebaseConfig.js';
+import { db, auth as firebaseAuth } from './config/firebaseConfig.js';
 import {
   collection, getDocs, query, orderBy, doc as docRef, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
@@ -478,39 +478,101 @@ function getLevelFromId(id){
   return m ? Number(m[1]) : null;
 }
 
-async function saveProgressForLevel(levelNum, completed, total, score){
-  if (!userUid) return;
+// async function saveProgressForLevel(levelNum, completed, total, score){
+//   if (!userUid) return;
+//   try {
+//     const uref = docRef(db, 'users', userUid);
+//     const usnap = await getDoc(uref);
+//     const udata = usnap.exists() ? usnap.data() : {};
+//     const prog = udata.progress || {};
+//     const prev = prog[`level${levelNum}`] || {};
+
+//     const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
+//     const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
+
+//     const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
+//     const bestScore = Math.max(prevScore, Number(score || 0));
+
+//     const payload = {
+//       progress: {
+//         [`level${levelNum}`]: {
+//           completed: Number(completed || 0),
+//           total: Number(total || 0),
+//           score: Number(score || 0),
+//           bestCompleted,
+//           bestScore,
+//           updatedAt: new Date().toISOString()
+//         }
+//       }
+//     };
+
+//     const idToken = await firebaseAuth.currentUser.getIdToken();
+//     await fetch('/api/saveProgress', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${idToken}`
+//       },
+//       body: JSON.stringify(payload.progress)
+//     });
+//   } catch (e) {
+//     console.warn('saveProgressForLevel()', e);
+//   }
+// }
+
+
+async function saveProgressForLevel(levelNum, completed, total, score) {
+  const user = firebaseAuth.currentUser;
+  if (!user) return console.warn('No user logged in — skipping progress save.');
+
   try {
-    const uref = docRef(db, 'users', userUid);
+    const idToken = await user.getIdToken();
+
+    const uref = docRef(db, 'users', user.uid);
     const usnap = await getDoc(uref);
     const udata = usnap.exists() ? usnap.data() : {};
-    const prog = udata.progress || {};
-    const prev = prog[`level${levelNum}`] || {};
+    const prev = (udata.progress || {})[`level${levelNum}`] || {};
 
-    const prevCompleted = Number(prev.bestCompleted ?? prev.completed ?? 0);
-    const prevScore = Number(prev.bestScore ?? prev.score ?? 0);
-
-    const bestCompleted = Math.max(prevCompleted, Number(completed || 0));
-    const bestScore = Math.max(prevScore, Number(score || 0));
+    const bestCompleted = Math.max(Number(prev.bestCompleted || 0), completed);
+    const bestScore = Math.max(Number(prev.bestScore || 0), score);
 
     const payload = {
       progress: {
         [`level${levelNum}`]: {
-          completed: Number(completed || 0),
-          total: Number(total || 0),
-          score: Number(score || 0),
+          completed,
+          total,
+          score,
           bestCompleted,
           bestScore,
-          updatedAt: new Date().toISOString()
-        }
-      }
+          updatedAt: new Date().toISOString(),
+        },
+      },
     };
 
-    await setDoc(uref, payload, { merge: true });
-  } catch (e) {
-    console.warn('saveProgressForLevel()', e);
+    const res = await fetch('/api/saveProgress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Server error: ${res.status} - ${errText}`);
+    }
+
+    console.log('Progress saved!');
+    if (typeof renderList === 'function') {
+      console.log('Refreshing quiz list...');
+      await renderList();
+    }
+  } catch (err) {
+    console.error('Failed to save progress:', err);
   }
 }
+
 
 function attachEventListeners() {
   const checkBtn = document.getElementById('checkBtn');

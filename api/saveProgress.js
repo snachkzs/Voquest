@@ -1,11 +1,4 @@
-const admin = (() => {
-  try {
-    return require('firebase-admin');
-  } catch (e) {
-    console.error('firebase-admin not installed');
-    throw e;
-  }
-})();
+import admin from 'firebase-admin';
 
 let initialized = false;
 function initAdmin() {
@@ -17,8 +10,18 @@ function initAdmin() {
   initialized = true;
 }
 
-module.exports = async function (req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   try {
     initAdmin();
@@ -27,7 +30,7 @@ module.exports = async function (req, res) {
     return res.status(500).json({ error: 'Server not configured' });
   }
 
-  const authHeader = req.headers.authorization || req.headers.Authorization || '';
+  const authHeader = req.headers.authorization || '';
   const match = authHeader.match(/^Bearer\s+(.+)$/i);
   if (!match) return res.status(401).json({ error: 'Missing Authorization header' });
 
@@ -36,20 +39,26 @@ module.exports = async function (req, res) {
   try {
     decoded = await admin.auth().verifyIdToken(idToken);
   } catch (err) {
-    console.warn('verifyIdToken failed', err && err.message);
+    console.warn('verifyIdToken failed', err.message);
     return res.status(401).json({ error: 'Invalid ID token' });
   }
 
   const uid = decoded.uid;
-  const progress = req.body;
-  if (!progress || typeof progress !== 'object') return res.status(400).json({ error: 'Missing progress payload' });
+  const { progress } = req.body;
+  if (!progress || typeof progress !== 'object') {
+    return res.status(400).json({ error: 'Missing progress payload' });
+  }
 
   try {
     const db = admin.firestore();
-    await db.collection('users').doc(uid).set({ progress, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection('users').doc(uid).set({
+      progress,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('failed to write progress', err);
     return res.status(500).json({ error: 'Failed to save' });
   }
-};
+}

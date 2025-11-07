@@ -1,4 +1,4 @@
-import { signUp, login, onAuthStateChangedListener, logout, getProfile } from '../api/auth.js';
+import { signUp, login, onAuthStateChangedListener, logout, getProfile } from './auth.js';
 
 const authForm = document.getElementById('authForm');
 const submitBtn = document.getElementById('submitBtn');

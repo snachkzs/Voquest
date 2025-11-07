@@ -220,6 +220,34 @@ export async function initQuizFromDocId(docId) {
     currentScore = 0;
     completedQuestions = 0;
 
+    if (userUid && levelNum) {
+      try {
+        const uref = docRef(db, 'users', userUid);
+        const usnap = await getDoc(uref);
+        if (usnap.exists()) {
+          const userData = usnap.data();
+          const progress = userData.progress || {};
+          const levelKey = `level${levelNum}`;
+          const levelProgress = progress[levelKey];
+          
+          if (levelProgress && levelProgress.lastQuestionIndex !== undefined) {
+            const lastIndex = Number(levelProgress.lastQuestionIndex);
+            const nextIndex = lastIndex + 1;
+            
+            if (nextIndex > 0 && nextIndex < totalQuestions) {
+              currentQuestionIndex = nextIndex;
+              completedQuestions = nextIndex;
+              currentScore = Number(levelProgress.score || 0);
+              
+              console.log(`✨ Auto-resume: Starting from question ${nextIndex + 1} (skipped ${nextIndex} completed questions)`);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load user progress for auto-resume:', e);
+      }
+    }
+
     const progressSub = document.querySelector('.progress-sub');
     if (progressSub) progressSub.style.display = 'none';
 
@@ -227,13 +255,16 @@ export async function initQuizFromDocId(docId) {
     if (progressText) progressText.textContent = `${completedQuestions}/${totalQuestions} Correct`;
 
     const progBarI = document.querySelector('.quiz-progress-bar > i');
-    if (progBarI) progBarI.style.width = '0%';
+    if (progBarI) {
+      const percent = totalQuestions > 0 ? Math.round((completedQuestions / totalQuestions) * 100) : 0;
+      progBarI.style.width = `${percent}%`;
+    }
 
     const progCaption = document.querySelector('.progress-caption');
     if (progCaption) progCaption.textContent = `Question ${currentQuestionIndex+1} of ${Math.max(1,totalQuestions)}`;
 
     renderQuizShell(container);
-    loadQuestion(0);
+    loadQuestion(currentQuestionIndex);
   } catch (err) {
     console.error('initQuizFromDocId()', err);
     const container = document.querySelector('.quiz-area');
@@ -539,11 +570,13 @@ async function saveProgressForLevel(levelNum, completed, total, score){
           score: Number(score || 0),
           bestCompleted,
           bestScore,
+          lastQuestionIndex: currentQuestionIndex, // 🆕 Save current question index
           updatedAt: new Date().toISOString()
         }
       }
     };
 
+    console.log(`💾 Saving progress: Level ${levelNum}, Question ${currentQuestionIndex + 1}/${total}, Score: ${score}`);
     await setDoc(uref, payload, { merge: true });
   } catch (e) {
     console.warn('saveProgressForLevel()', e);

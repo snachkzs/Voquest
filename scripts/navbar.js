@@ -45,6 +45,39 @@ async function initNavbar() {
   if (!html) html = NAVBAR_FALLBACK;
   root.innerHTML = html;
 
+  const hamburger = root.querySelector('.hamburger');
+  const navFrame = root.querySelector('.nav-frame');
+  const navList = root.querySelector('#nav-list');
+  function closeMenu() {
+    if (hamburger) {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+    if (navFrame) navFrame.classList.remove('open');
+  }
+  function openMenu() {
+    if (hamburger) {
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+    }
+    if (navFrame) navFrame.classList.add('open');
+  }
+  if (hamburger && navFrame) {
+    hamburger.addEventListener('click', (e) => {
+      const isOpen = hamburger.classList.contains('open');
+      if (isOpen) closeMenu(); else openMenu();
+    });
+
+    navList && navList.addEventListener('click', (e) => {
+      if (e.target && e.target.matches('a')) closeMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target)) closeMenu();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  }
+
   const navUl = root.querySelector('nav ul');
   if (!navUl) return;
 

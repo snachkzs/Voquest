@@ -26,8 +26,10 @@
   width:87%;
   flex-direction:column;
   align-items:flex-start;
+  flex-direction: column;
   gap:30px;
   margin: 110px auto 120px;
+  padding: 0 24px;
   box-sizing:border-box;
 }
 
@@ -80,19 +82,20 @@
 .card-sub{ color:#0B1C48; font-family:Inter, sans-serif; font-size:12px; margin:0; opacity:0.9; }
 
 @media (max-width:1250px){
-  .courses-frame{ width: calc(100% - 48px); margin:72px 24px; }
-  .course-card{ flex: 0 0 calc((100% - 28px) / 2); max-width: calc((100% - 28px) / 2); }
-  .courses-grid { grid-template-columns: repeat(2, 1fr); }
-}
+  .courses-frame{ margin: 90px auto 100px; padding: 0 20px; }
+  .courses-grid {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 16px;
+  }
+} 
 @media (max-width:720px){
-  .courses-frame{ width:100%; margin:56px 16px; }
-  .course-card{ width:100%; flex:0 0 100%; max-width:100%; }
+  .courses-frame{ margin: calc(var(--header-height,64px) + 16px) auto 120px; padding: 0 16px; }
+  .courses-grid { grid-template-columns: 1fr; gap: 18px; }
   .courses-title{ font-size:34px; }
-  .courses-sub{ font-size:16px; }
-  .courses-grid { grid-template-columns: 1fr; gap:20px; }
+  .courses-sub{ font-size:15px; }
+  .card-media { height: 160px; }
 }
 
-/* Course Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -296,7 +299,7 @@
 .video-container {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   border-radius: 12px;

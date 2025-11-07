@@ -347,7 +347,7 @@ body .hero-frame {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 720px) {
   .profile-card {
     padding: 24px;
   }
@@ -366,11 +366,23 @@ body .hero-frame {
     font-size: 24px;
   }
 
-  .profile-stats {
-    grid-template-columns: 1fr;
+  .profile-stats{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    width:100%;
+    margin-bottom:16px;
   }
 
-  .stat-value {
-    font-size: 24px;
+  .stat-card{
+    flex: 1 1 calc(50% - 12px);
+    min-width: 0;
+    padding:20px 24px;
+    box-sizing:border-box;
+  }
+
+  .stat-value{
+    font-size:28px;
   }
 }

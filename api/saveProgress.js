@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   }
 
   const uid = decoded.uid;
-  const progress = req.body;
+  const { progress } = req.body;
   if (!progress || typeof progress !== 'object') {
     return res.status(400).json({ error: 'Missing progress payload' });
   }

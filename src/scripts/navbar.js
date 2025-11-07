@@ -5,7 +5,7 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
   <header class="navbar">
     <div class="navbar-container">
       <a href="index.html" class="brand-link">
-        <img src="../assets/logo.svg" alt="Voquest" class="brand-logo" />
+        <img src="../../public/assets/logo.svg" alt="Voquest" class="brand-logo" />
         <span class="brand-text">Voquest</span>
       </a>
 

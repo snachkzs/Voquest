@@ -1,4 +1,4 @@
-import { db, auth as firebaseAuth } from '../api/config/firebaseConfig.js';
+import { db, auth as firebaseAuth } from './config/firebaseConfig.js';
 import {
   collection, getDocs, query, orderBy, doc as docRef, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";

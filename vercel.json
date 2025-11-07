@@ -1,11 +1,18 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/src/api/$1" },
-    { "source": "/styles/(.*)", "destination": "/src/styles/$1" },
-    { "source": "/scripts/(.*)", "destination": "/src/scripts/$1" },
-    { "source": "/assets/(.*)", "destination": "/src/assets/$1" },
-    { "source": "/", "destination": "/src/pages/index.html" },
-    { "source": "/(.*).html", "destination": "/src/pages/$1.html" }
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "pages/**/*.html", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" },
+    { "src": "scripts/**/*", "use": "@vercel/static" },
+    { "src": "styles/**/*", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/scripts/(.*)", "dest": "/scripts/$1" },
+    { "src": "/styles/(.*)", "dest": "/styles/$1" },
+    { "src": "/(.*).html", "dest": "/pages/$1.html" },
+    { "src": "/", "dest": "/pages/index.html" }
   ]
 }

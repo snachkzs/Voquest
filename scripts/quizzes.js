@@ -564,6 +564,10 @@ async function saveProgressForLevel(levelNum, completed, total, score) {
     }
 
     console.log('Progress saved!');
+    if (typeof renderList === 'function') {
+      console.log('Refreshing quiz list...');
+      await renderList();
+    }
   } catch (err) {
     console.error('Failed to save progress:', err);
   }

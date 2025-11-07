@@ -527,12 +527,23 @@ async function saveProgressForLevel(levelNum, completed, total, score) {
 
   try {
     const idToken = await user.getIdToken();
+
+    const uref = docRef(db, 'users', user.uid);
+    const usnap = await getDoc(uref);
+    const udata = usnap.exists() ? usnap.data() : {};
+    const prev = (udata.progress || {})[`level${levelNum}`] || {};
+
+    const bestCompleted = Math.max(Number(prev.bestCompleted || 0), completed);
+    const bestScore = Math.max(Number(prev.bestScore || 0), score);
+
     const payload = {
       progress: {
         [`level${levelNum}`]: {
           completed,
           total,
           score,
+          bestCompleted,
+          bestScore,
           updatedAt: new Date().toISOString(),
         },
       },
@@ -557,6 +568,7 @@ async function saveProgressForLevel(levelNum, completed, total, score) {
     console.error('Failed to save progress:', err);
   }
 }
+
 
 function attachEventListeners() {
   const checkBtn = document.getElementById('checkBtn');

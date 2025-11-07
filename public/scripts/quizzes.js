@@ -537,7 +537,8 @@ async function saveProgressForLevel(payload) {
     if (saveStatusEl) saveStatusEl.textContent = 'Saving...';
 
     // kirim data ke API server-side
-    const res = await fetch('/api/saveProgress', {
+    const API_BASE = 'https://voquestpawm-git-test-server-snachkzs-projects.vercel.app';
+    await fetch(`${API_BASE}/api/saveProgress`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

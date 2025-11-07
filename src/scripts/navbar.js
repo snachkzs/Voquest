@@ -1,4 +1,4 @@
-import { auth } from '../api/config/firebaseConfig.js';
+import { auth } from '../lib/config/firebaseConfig.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
   const NAVBAR_FALLBACK = `

@@ -2,19 +2,15 @@
   "version": 2,
   "builds": [
     { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "pages/**/*.html", "use": "@vercel/static" },
+    { "src": "pages/**/*", "use": "@vercel/static" },
     { "src": "assets/**/*", "use": "@vercel/static" },
     { "src": "scripts/**/*", "use": "@vercel/static" },
     { "src": "styles/**/*", "use": "@vercel/static" },
     { "src": "components/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "^/api/(.*)$", "dest": "/api/$1" },
-    { "src": "^/assets/(.*)$", "dest": "/assets/$1" },
-    { "src": "^/scripts/(.*)$", "dest": "/scripts/$1" },
-    { "src": "^/styles/(.*)$", "dest": "/styles/$1" },
-    { "src": "^/components/(.*)$", "dest": "/components/$1" },
-    { "src": "^/(.*)\\.html$", "dest": "/pages/$1.html" },
-    { "src": "^/$", "dest": "/pages/index.html" }
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/pages/$1.html" },
+    { "src": "/", "dest": "/pages/index.html" }
   ]
 }
